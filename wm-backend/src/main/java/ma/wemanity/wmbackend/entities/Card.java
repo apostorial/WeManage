@@ -1,27 +1,31 @@
 package ma.wemanity.wmbackend.entities;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Document @Data @NoArgsConstructor @AllArgsConstructor
 public class Card {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
+    @NotNull
     private String name;
     private String company;
     private String position;
     private String email;
     private String number;
     private String website;
-    @OneToMany(mappedBy = "card")
+    @DBRef
     private Set<Comment> comments = new HashSet<>();;
-    @ManyToOne
+    @DBRef
     private Column column;
-    @ManyToMany
+    @DBRef
     private Set<Label> labels = new HashSet<>();;
 }

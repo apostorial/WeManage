@@ -1,20 +1,26 @@
 package ma.wemanity.wmbackend.entities;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Document
+@Data @NoArgsConstructor @AllArgsConstructor
 public class Column {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
+    @NotNull @Indexed(unique=true)
     private String name;
     private String description;
-    @ManyToOne
+    @DBRef
     private Board board;
-    @OneToMany(mappedBy = "column")
+    @DBRef
     private Set<Card> cards;
 }

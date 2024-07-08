@@ -1,28 +1,31 @@
 package ma.wemanity.wmbackend.entities;
 
-import jakarta.persistence.*;
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Document @Data @NoArgsConstructor @AllArgsConstructor
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique = true, nullable = false)
+    @Id
+    private String id;
+    @NotNull @Indexed(unique = true)
     private String username;
-    @Column(nullable = false)
+    @NotNull
     private String password;
-    @ManyToOne
+    @DBRef
     private Role role;
-    @OneToMany(mappedBy = "owner")
+    @DBRef
     private Set<Board> ownerOf = new HashSet<>();
-    @ManyToMany(mappedBy = "members")
+    @DBRef
     private Set<Board> memberOf = new HashSet<>();
-    @OneToMany(mappedBy = "author")
+    @DBRef
     private Set<Comment> authorOf = new HashSet<>();
 }

@@ -1,20 +1,24 @@
 package ma.wemanity.wmbackend.entities;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Document @Data @NoArgsConstructor @AllArgsConstructor
 public class Comment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
+    @NotNull
     private String content;
     private LocalDateTime createdAt;
-    @ManyToOne
+    @DBRef
     private Card card;
-    @ManyToOne
+    @DBRef
     private User author;
 }
