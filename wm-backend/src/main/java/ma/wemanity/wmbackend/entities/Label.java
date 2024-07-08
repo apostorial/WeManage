@@ -15,7 +15,7 @@ import java.util.Set;
 @Document @Data @NoArgsConstructor @AllArgsConstructor
 public class Label {
     @Id
-    private Long id;
+    private String id;
     @NotNull @Indexed(unique=true)
     private String name;
     @NotNull @Indexed(unique=true)

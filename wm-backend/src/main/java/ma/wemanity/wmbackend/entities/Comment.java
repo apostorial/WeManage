@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Document @Data @NoArgsConstructor @AllArgsConstructor
 public class Comment {
     @Id
-    private Long id;
+    private String id;
     @NotNull
     private String content;
     private LocalDateTime createdAt;

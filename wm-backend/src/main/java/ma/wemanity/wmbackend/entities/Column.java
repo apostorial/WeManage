@@ -15,7 +15,7 @@ import java.util.Set;
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Column {
     @Id
-    private Long id;
+    private String id;
     @NotNull @Indexed(unique=true)
     private String name;
     private String description;
