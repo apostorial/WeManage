@@ -22,7 +22,7 @@ public class Member {
     @NotNull
     private String password;
     @NotNull
-    private Set<Role> role;
+    private Set<Role> role = new HashSet<>();
     @DBRef
     private Set<Board> ownerOf = new HashSet<>();
     @DBRef
