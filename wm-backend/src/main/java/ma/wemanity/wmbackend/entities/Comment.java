@@ -20,5 +20,5 @@ public class Comment {
     @DBRef
     private Card card;
     @DBRef
-    private User author;
+    private Member author;
 }

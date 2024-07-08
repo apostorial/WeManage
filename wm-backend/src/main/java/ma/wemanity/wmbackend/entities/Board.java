@@ -21,7 +21,7 @@ public class Board {
     @DBRef
     private Set<Column> columns = new HashSet<>();;
     @DBRef
-    private User owner;
+    private Member owner;
     @DBRef
-    private Set<User> members = new HashSet<>();;
+    private Set<Member> members = new HashSet<>();;
 }
