@@ -27,11 +27,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(registy -> {
-                    registy.requestMatchers("/api/user/**").permitAll();
-                    registy.requestMatchers("/admin").hasRole("ADMIN");
-                    registy.requestMatchers("/user").hasRole("USER");
-                    registy.anyRequest().authenticated();
+                .authorizeHttpRequests(registry -> {
+                    registry.requestMatchers("/api/user/**").permitAll();
+                    registry.anyRequest().authenticated();
                 })
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
