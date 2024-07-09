@@ -7,8 +7,10 @@ import ma.wemanity.wmbackend.entities.Member;
 import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.repositories.BoardRepository;
+import ma.wemanity.wmbackend.repositories.MemberRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,13 +18,17 @@ import java.util.Optional;
 @Service @AllArgsConstructor @Slf4j
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public Board createBoard(Board board) throws ServiceException {
         try {
-            //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            //Member authenticatedUser = (Member) authentication.getPrincipal();
-            //board.setOwner(authenticatedUser);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Object principal = authentication.getPrincipal();
+            User userDetails = (org.springframework.security.core.userdetails.User) principal;
+            Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+            board.setOwner(authenticatedUser);
             return boardRepository.save(board);
         } catch (Exception e) {
             throw new ServiceException("Failed to create board", e);
