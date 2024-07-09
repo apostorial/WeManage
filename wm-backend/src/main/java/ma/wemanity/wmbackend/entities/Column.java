@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Document
@@ -22,5 +23,5 @@ public class Column {
     @DBRef
     private Board board;
     @DBRef
-    private Set<Card> cards;
+    private Set<Card> cards = new HashSet<>();
 }
