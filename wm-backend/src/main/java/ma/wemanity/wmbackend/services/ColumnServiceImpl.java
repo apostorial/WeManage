@@ -11,7 +11,6 @@ import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.ColumnRepository;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
