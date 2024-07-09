@@ -3,14 +3,12 @@ package ma.wemanity.wmbackend.services;
 import lombok.AllArgsConstructor;
 import ma.wemanity.wmbackend.entities.Member;
 import ma.wemanity.wmbackend.repositories.MemberRepository;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,11 +31,5 @@ public class MemberDetailsService implements UserDetailsService {
         } else {
             throw new UsernameNotFoundException(username);
         }
-    }
-
-    private Collection<? extends GrantedAuthority> getAuthorities(Member member) {
-        return member.getRole().stream()
-            .map(role -> new SimpleGrantedAuthority(role.name()))
-            .collect(Collectors.toList());
     }
 }
