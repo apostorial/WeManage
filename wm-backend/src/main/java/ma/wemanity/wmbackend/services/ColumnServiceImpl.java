@@ -59,8 +59,21 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public void deleteBoard(String id) throws ColumnNotFoundException, ServiceException {
+    public void deleteColumn(String id) throws ServiceException {
+        try {
+            Optional<Column> optionalColumn = columnRepository.findById(id);
+            if (optionalColumn.isEmpty()) {
+                throw new ColumnNotFoundException("Column not found with id: " + id);
+            }
+            Column column = optionalColumn.get();
+            Board board = column.getBoard();
 
+            columnRepository.deleteById(id);
+            board.getColumns().remove(column);
+            boardRepository.save(board);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to delete column", e);
+        }
     }
 
     @Override
