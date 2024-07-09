@@ -20,6 +20,19 @@ public class ColumnServiceImpl implements ColumnService {
     private final BoardRepository boardRepository;
 
     @Override
+    public Column getColumn(String id) throws ServiceException {
+        try {
+            Optional<Column> column = columnRepository.findById(id);
+            if (column.isEmpty()) {
+                throw new ColumnNotFoundException("Column not found with id: " + id);
+            }
+            return column.get();
+        } catch (Exception e) {
+            throw new ServiceException("Failed to get column", e);
+        }
+    }
+
+    @Override
     public Column createColumn(String boardId, String name) throws ServiceException {
         try {
             Optional<Board> optionalBoard = boardRepository.findById(boardId);

@@ -15,6 +15,16 @@ import java.util.List;
 public class ColumnRestController {
     private final ColumnService columnService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Column> getColumn(@PathVariable("id") String id) {
+        try {
+            Column column = columnService.getColumn(id);
+            return new ResponseEntity<>(column, HttpStatus.OK);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Column> createColumn(@RequestParam("boardId") String boardId,
                                                @RequestParam("name") String name) {
