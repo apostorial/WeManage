@@ -25,6 +25,19 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
+    public Board getBoard(String id) throws ServiceException {
+        try {
+            Optional<Board> board = boardRepository.findById(id);
+            if (board.isEmpty()) {
+                throw new BoardNotFoundException("Board not found with id: " + id);
+            }
+            return board.get();
+        } catch (Exception e) {
+            throw new ServiceException("Failed to get board", e);
+        }
+    }
+
+    @Override
     public Board createBoard(Board board) throws ServiceException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

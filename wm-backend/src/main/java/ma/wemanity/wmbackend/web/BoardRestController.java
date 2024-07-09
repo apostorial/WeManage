@@ -17,6 +17,16 @@ import java.util.List;
 public class BoardRestController {
     private final BoardService boardService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Board> getBoard(@PathVariable("id") String id) {
+        try {
+            Board board = boardService.getBoard(id);
+            return new ResponseEntity<>(board, HttpStatus.OK);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Board> createBoard(@RequestBody Board board) {
         try {
@@ -27,10 +37,10 @@ public class BoardRestController {
         }
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Board> updateBoard(@PathVariable("id") String id,
-                                             @RequestParam("name") String name,
-                                             @RequestParam("description") String description,
+                                             @RequestParam(name = "name") String name,
+                                             @RequestParam(name = "description", required = false) String description,
                                              Authentication authentication) {
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
