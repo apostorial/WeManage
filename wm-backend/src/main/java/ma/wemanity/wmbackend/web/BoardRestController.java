@@ -1,18 +1,19 @@
 package ma.wemanity.wmbackend.web;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Board;
+import ma.wemanity.wmbackend.entities.Member;
+import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.services.BoardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
-@RestController @AllArgsConstructor @Slf4j @RequestMapping("/api/board")
+@RestController @AllArgsConstructor @RequestMapping("/api/board")
 public class BoardRestController {
     private final BoardService boardService;
 
@@ -25,4 +26,21 @@ public class BoardRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Board> updateBoard(@PathVariable("id") String id,
+                                             @RequestParam("name") String name,
+                                             @RequestParam("description") String description,
+                                             Authentication authentication) {
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Board updatedBoard = boardService.updateBoard(id, name, description, userDetails);
+            return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+        } catch (BoardNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
