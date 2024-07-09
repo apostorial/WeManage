@@ -11,8 +11,10 @@ import ma.wemanity.wmbackend.repositories.MemberRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
 @Service @AllArgsConstructor @Slf4j
@@ -25,7 +27,7 @@ public class BoardServiceImpl implements BoardService {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object principal = authentication.getPrincipal();
-            User userDetails = (org.springframework.security.core.userdetails.User) principal;
+            User userDetails = (User) principal;
             Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
             board.setOwner(authenticatedUser);
@@ -36,12 +38,21 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board updateBoard(Board board) throws ServiceException {
+    public Board updateBoard(String id, String name, String description, UserDetails authenticatedUser) throws ServiceException {
         try {
-            if (!boardRepository.existsById(board.getId())) {
-                throw new BoardNotFoundException("Board not found with id: " + board.getId());
+            Optional<Board> optionalExistingBoard = boardRepository.findById(id);
+            if (optionalExistingBoard.isEmpty()) {
+                throw new BoardNotFoundException("Board not found with id: " + id);
             }
-            return boardRepository.save(board);
+            Board existingBoard = optionalExistingBoard.get();
+
+            if (!authenticatedUser.getUsername().equals(existingBoard.getOwner().getUsername())) {
+                throw new AccessDeniedException("You are not authorized to update this board.");
+            }
+
+            existingBoard.setName(name);
+            existingBoard.setDescription(description);
+            return boardRepository.save(existingBoard);
         } catch (Exception e) {
             throw new ServiceException("Failed to update board", e);
         }
