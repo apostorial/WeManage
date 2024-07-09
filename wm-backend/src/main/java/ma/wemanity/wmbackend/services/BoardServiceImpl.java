@@ -40,29 +40,35 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Board updateBoard(String id, String name, String description, UserDetails authenticatedUser) throws ServiceException {
         try {
-            Optional<Board> optionalExistingBoard = boardRepository.findById(id);
-            if (optionalExistingBoard.isEmpty()) {
+            Optional<Board> optionalBoard = boardRepository.findById(id);
+            if (optionalBoard.isEmpty()) {
                 throw new BoardNotFoundException("Board not found with id: " + id);
             }
-            Board existingBoard = optionalExistingBoard.get();
+            Board board = optionalBoard.get();
 
-            if (!authenticatedUser.getUsername().equals(existingBoard.getOwner().getUsername())) {
+            if (!authenticatedUser.getUsername().equals(board.getOwner().getUsername())) {
                 throw new AccessDeniedException("You are not authorized to update this board.");
             }
 
-            existingBoard.setName(name);
-            existingBoard.setDescription(description);
-            return boardRepository.save(existingBoard);
+            board.setName(name);
+            board.setDescription(description);
+            return boardRepository.save(board);
         } catch (Exception e) {
             throw new ServiceException("Failed to update board", e);
         }
     }
 
     @Override
-    public void deleteBoard(String id) throws ServiceException{
+    public void deleteBoard(String id, UserDetails authenticatedUser) throws ServiceException{
         try {
-            if (!boardRepository.existsById(id)) {
+            Optional<Board> optionalBoard = boardRepository.findById(id);
+            if (optionalBoard.isEmpty()) {
                 throw new BoardNotFoundException("Board not found with id: " + id);
+            }
+            Board board = optionalBoard.get();
+
+            if (!authenticatedUser.getUsername().equals(board.getOwner().getUsername())) {
+                throw new AccessDeniedException("You are not authorized to delete this board.");
             }
             boardRepository.deleteById(id);
         } catch (Exception e) {
