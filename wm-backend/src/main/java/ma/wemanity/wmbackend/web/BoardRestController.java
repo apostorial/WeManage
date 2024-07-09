@@ -11,7 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-@RestController @AllArgsConstructor @RequestMapping("/api/board")
+import java.util.List;
+
+@RestController @AllArgsConstructor @RequestMapping("/api/boards")
 public class BoardRestController {
     private final BoardService boardService;
 
@@ -50,6 +52,16 @@ public class BoardRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BoardNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Board>> listBoards(Authentication authentication) {
+        try {
+            List<Board> boards = boardService.getBoardsByAuthenticatedUser(authentication);
+            return new ResponseEntity<>(boards, HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

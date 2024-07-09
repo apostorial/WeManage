@@ -12,9 +12,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.Optional;
 
 @Service @AllArgsConstructor @Slf4j
@@ -77,14 +79,10 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<Board> getBoard(Board board) throws ServiceException {
-        try {
-            if (!boardRepository.existsById(board.getId())) {
-                throw new BoardNotFoundException("Board not found with id: " + board.getId());
-            }
-            return boardRepository.findById(board.getId());
-        } catch (Exception e) {
-            throw new ServiceException("Failed to retrieve board", e);
-        }
+    public List<Board> getBoardsByAuthenticatedUser(Authentication authentication) {
+        String username = authentication.getName();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return boardRepository.findByOwnerId(member.getId());
     }
 }
