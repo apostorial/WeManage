@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor @JsonSerialize(using = BoardSerializer.class)
@@ -31,5 +32,18 @@ public class Board {
         if (!columns.contains(column)) {
             this.columns.add(column);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        return Objects.equals(id, board.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
