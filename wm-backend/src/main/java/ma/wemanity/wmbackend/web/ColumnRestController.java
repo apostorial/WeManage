@@ -37,4 +37,16 @@ public class ColumnRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Column> deleteColumn(@PathVariable("id") String id) {
+        try {
+            columnService.deleteColumn(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ColumnNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
