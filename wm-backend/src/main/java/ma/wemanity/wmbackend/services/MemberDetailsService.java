@@ -5,7 +5,6 @@ import ma.wemanity.wmbackend.entities.Member;
 import ma.wemanity.wmbackend.repositories.MemberRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,7 +37,7 @@ public class MemberDetailsService implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> getAuthorities(Member member) {
         return member.getRole().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toList());
+            .map(role -> new SimpleGrantedAuthority(role.name()))
+            .collect(Collectors.toList());
     }
 }
