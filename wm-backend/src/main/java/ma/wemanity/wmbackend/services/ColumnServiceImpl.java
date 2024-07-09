@@ -77,7 +77,11 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public List<Column> getColumnsByBoard(Board board) throws ServiceException {
-        return List.of();
+    public List<Column> getColumnsByBoardId(String id) throws ServiceException {
+        try {
+            return columnRepository.findByBoardId(id);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to get columns by boardId", e);
+        }
     }
 }

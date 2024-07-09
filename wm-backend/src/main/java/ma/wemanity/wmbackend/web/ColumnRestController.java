@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController@AllArgsConstructor @RequestMapping("/api/columns")
 public class ColumnRestController {
     private final ColumnService columnService;
@@ -46,6 +48,16 @@ public class ColumnRestController {
         } catch (ColumnNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/board/{id}")
+    public ResponseEntity<List<Column>> getColumnsByBoardId(@PathVariable String id) {
+        try {
+            List<Column> columns = columnService.getColumnsByBoardId(id);
+            return new ResponseEntity<>(columns, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
