@@ -32,7 +32,8 @@ public class SecurityConfig {
                 registry.anyRequest().authenticated();
             })
             .formLogin(withDefaults())
-            .httpBasic(withDefaults()).build();
+            .httpBasic(withDefaults())
+            .build();
     }
 
     @Bean
@@ -42,19 +43,6 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
 
         return new ProviderManager(authenticationProvider);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return memberDetailsService;
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(memberDetailsService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return daoAuthenticationProvider;
     }
 
     @Bean
