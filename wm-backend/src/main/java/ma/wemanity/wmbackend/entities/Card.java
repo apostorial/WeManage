@@ -26,11 +26,11 @@ public class Card {
     private String number;
     private String website;
     @DBRef
-    private Set<Comment> comments = new HashSet<>();;
+    private Set<Comment> comments = new HashSet<>();
     @DBRef
     private Column column;
     @DBRef
-    private Set<Label> labels = new HashSet<>();;
+    private Set<Label> labels = new HashSet<>();
 
     @JsonProperty("comments")
     public List<String> getCommentsForSerialization() {
