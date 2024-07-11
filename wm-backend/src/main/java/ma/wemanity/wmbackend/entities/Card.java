@@ -50,4 +50,10 @@ public class Card {
                 .map(Label::getId)
                 .collect(Collectors.toList());
     }
+
+    public void addComment(Comment comment) {
+        if (!comments.contains(comment)) {
+            this.comments.add(comment);
+        }
+    }
 }
