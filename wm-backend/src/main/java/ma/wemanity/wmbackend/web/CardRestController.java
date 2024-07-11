@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/cards")
 public class CardRestController {
@@ -37,8 +38,23 @@ public class CardRestController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Card> updateCard(@PathVariable String id) {
-        return null;
+    public ResponseEntity<Card> updateCard(@PathVariable("id") String id,
+                                           @RequestParam(name = "name", required = false) String name,
+                                           @RequestParam(name = "company", required = false) String company,
+                                           @RequestParam(name = "position", required = false) String position,
+                                           @RequestParam(name = "email", required = false) String email,
+                                           @RequestParam(name = "number", required = false) String number,
+                                           @RequestParam(name = "website", required = false) String website,
+                                           @RequestParam(name = "columnId", required = false) String columnId,
+                                           @RequestParam(name = "labelIds", required = false) Set<String> labelIds) {
+        try {
+            Card card = cardService.updateCard(id, name, company, position, email, number, website, columnId, labelIds);
+            return new ResponseEntity<>(card, HttpStatus.OK);
+        } catch (CardNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/delete/{id}")
@@ -59,6 +75,18 @@ public class CardRestController {
             List<Card> cards = cardService.getCardsByColumnId(id);
             return new ResponseEntity<>(cards, HttpStatus.OK);
         } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}/label/{labelId}")
+    public ResponseEntity<Card> removeLabelFromCard(@PathVariable String id, @PathVariable String labelId) {
+        try {
+            Card updatedCard = cardService.removeLabelFromCard(id, labelId);
+            return new ResponseEntity<>(updatedCard, HttpStatus.OK);
+        } catch (CardNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
