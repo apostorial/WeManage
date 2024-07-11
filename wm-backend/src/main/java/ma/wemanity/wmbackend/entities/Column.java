@@ -16,8 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Document
-@Data @NoArgsConstructor @AllArgsConstructor
+@Document @Data @NoArgsConstructor @AllArgsConstructor
 public class Column {
     @Id
     private String id;
@@ -44,6 +43,12 @@ public class Column {
     public void addCard(Card card) {
         if (!cards.contains(card)) {
             this.cards.add(card);
+        }
+    }
+
+    public void removeCard(Card card) {
+        if (cards.contains(card)) {
+            this.cards.remove(card);
         }
     }
 
