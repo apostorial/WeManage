@@ -65,6 +65,9 @@ public class CardServiceImpl implements CardService {
                 throw new CardNotFoundException("Card not found with id: " + id);
             }
             Card card = optionalCard.get();
+            Column existingColumn = card.getColumn();
+            existingColumn.removeCard(card);
+            columnRepository.save(existingColumn);
 
             card.setName(name);
             card.setCompany(company);
@@ -76,6 +79,8 @@ public class CardServiceImpl implements CardService {
             Column column = columnRepository.findById(columnId)
                     .orElseThrow(() -> new ColumnNotFoundException("Column not found with id: " + columnId));
             card.setColumn(column);
+            column.addCard(card);
+            columnRepository.save(column);
 
             for (Label label : card.getLabels()) {
                 label.getCards().remove(card);
@@ -112,7 +117,7 @@ public class CardServiceImpl implements CardService {
             Card card = optionalCard.get();
             Column column = card.getColumn();
 
-            columnRepository.deleteById(id);
+            cardRepository.deleteById(id);
             column.getCards().remove(card);
             columnRepository.save(column);
         } catch (Exception e) {
@@ -132,27 +137,19 @@ public class CardServiceImpl implements CardService {
     @Override
     public Card removeLabelFromCard(String id, String labelId) throws ServiceException {
         try {
-            log.error("1");
             Optional<Card> optionalCard = cardRepository.findById(id);
             if (optionalCard.isEmpty()) {
                 throw new CardNotFoundException("Card not found with id: " + id);
             }
-            log.error("2");
             Card card = optionalCard.get();
-            log.error("3");
 
             Optional<Label> optionalLabel = labelRepository.findById(labelId);
-            log.error("a");
             if (optionalLabel.isEmpty()) {
-                log.error("b");
                 throw new LabelNotFoundException("Label not found with id: " + labelId);
             }
-            log.error("4");
             Label label = optionalLabel.get();
-            log.error("5");
-
+            label.getCards().remove(card);
             card.getLabels().remove(label);
-            log.error("6");
             return cardRepository.save(card);
         } catch (Exception e) {
             log.error("7");
