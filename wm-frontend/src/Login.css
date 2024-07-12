@@ -97,8 +97,8 @@
     width: 344px;
     margin: 0 !important;
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     border-radius: 4px;
     background-color: #2C2D2F;
     border: 0.6px solid rgba(238, 238, 238, 0.15);
@@ -186,7 +186,33 @@
     position: relative;
     font-weight: 600;
     color: #efefef;
+    width: 47px;
 }
+
+
+.sign-in-parent {
+    width: auto;
+    position: relative;
+    border: none;
+    text-decoration: none;
+    border-radius: 4px;
+    background-color: #9e3eff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 148px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    font-family: 'Work Sans';
+    cursor: pointer;
+    transition-duration: 0.4s;
+
+}
+
+
 .sign-in-wrapper {
     align-self: stretch;
     border-radius: 4px;
@@ -200,9 +226,14 @@
     box-sizing: border-box;
     cursor: pointer;
     transition-duration: 0.4s;
+    transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+    transform-style: preserve-3d;
 }
-.sign-in-wrapper:hover {
+.sign-in-parent:hover {
     background-color: #962ffd;
+    transform: translate3d(0px, 0px, 0px) scale3d(1.02, 1.02, 1.02) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+    transform-style: preserve-3d;
+    transition-duration: 0.4s;
 }
 
 .forgot-your-password {
@@ -211,7 +242,7 @@
 .reset-password {
     position: relative;
     color: #007aff;
-
+    transition-duration: 0.4s;
 }
 .reset-password:hover {
     color: #efefef;
