@@ -34,6 +34,12 @@ public class Label {
                 .collect(Collectors.toList());
     }
 
+    public void removeCard(Card card) {
+        if (cards.contains(card)) {
+            this.cards.remove(card);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
