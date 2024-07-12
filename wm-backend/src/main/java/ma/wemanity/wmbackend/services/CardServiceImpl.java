@@ -148,11 +148,11 @@ public class CardServiceImpl implements CardService {
                 throw new LabelNotFoundException("Label not found with id: " + labelId);
             }
             Label label = optionalLabel.get();
-            label.getCards().remove(card);
-            card.getLabels().remove(label);
+            label.removeCard(card);
+            labelRepository.save(label);
+            card.removeLabel(label);
             return cardRepository.save(card);
         } catch (Exception e) {
-            log.error("7");
             throw new ServiceException("Failed to remove label from card", e);
         }
     }
