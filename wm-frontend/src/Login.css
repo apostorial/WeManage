@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 .logo-icon {
     width: 153px;
     position: relative;
     height: 32px;
     object-fit: cover;
 }
+
 .title {
     align-self: stretch;
     position: relative;
@@ -112,7 +115,6 @@
     z-index: 0;
     font-size: 14px;
     color: #efefef;
-    font-family: 'Work Sans';
     transition-duration: 0.4s;
 }
 

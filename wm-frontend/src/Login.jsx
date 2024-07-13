@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import './index.css';
 import './Login.css';
+// import { useNavigate } from 'react-router-dom';
 import logo from './assets/Logo.png';
 import eyeIcon from './assets/eye icon.svg';
 import showPassIcon from './assets/show pass icon.svg';
 
-const SignIn = () => {
+const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  // const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
     const formData = new URLSearchParams();
     formData.append('username', username);
@@ -31,15 +34,14 @@ const SignIn = () => {
       });
 
       if (response.ok) {
-        // Handle successful login
         const data = await response;
-        console.log('Login successful:', data);
-      } else {
         window.location.href = 'https://www.google.com';
-        console.error('Login failed:', response.statusText);
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Login failed. Please check your username and password.');
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      setErrorMessage('Error during login. Please try again.', error);
     }
   };
 
@@ -112,6 +114,7 @@ const SignIn = () => {
                   </div>
                 </div>
               </div>
+              {errorMessage && <div className="error-message">{errorMessage}</div>}
               <div className="frame-parent">
                 <button type="submit" className="sign-in-parent">
                   <div className="sign-in">Sign in</div>
@@ -129,4 +132,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Login;
