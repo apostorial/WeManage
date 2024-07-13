@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +20,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration @AllArgsConstructor @EnableWebSecurity
 public class SecurityConfig {
     private final MemberDetailsService memberDetailsService;
+    private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationFailureHandler failureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,7 +32,12 @@ public class SecurityConfig {
                 registry.requestMatchers("/swagger-ui/index.html").hasRole("ADMIN");
                 registry.anyRequest().authenticated();
             })
-            .formLogin(withDefaults())
+            .formLogin(login -> login
+                    .loginProcessingUrl("/login")
+                    .successHandler(successHandler)
+                    .failureHandler(failureHandler)
+                    .permitAll())
+            .logout(LogoutConfigurer::permitAll)
             .httpBasic(withDefaults())
             .build();
     }
