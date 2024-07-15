@@ -1,0 +1,57 @@
+/* src/styles/Column.css */
+.column {
+    min-width: 280px;
+    width: 280px;
+    margin-right: 20px;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+  }
+  
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .column h3 {
+    margin: 0;
+  }
+  
+  .add-card-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .cards-container {
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+  
+  .add-card-form {
+    margin-top: 10px;
+  }
+  
+  .add-card-form input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .add-card-form button {
+    margin-right: 5px;
+  }
