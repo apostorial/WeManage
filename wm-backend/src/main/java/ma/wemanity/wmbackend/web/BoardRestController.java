@@ -28,9 +28,10 @@ public class BoardRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Board> createBoard(@RequestBody Board board) {
+    public ResponseEntity<Board> createBoard(@RequestParam(name = "name") String name,
+                                             @RequestParam(name = "description", required = false) String description) {
         try {
-            Board createdBoard = boardService.createBoard(board);
+            Board createdBoard = boardService.createBoard(name, description);
             return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
