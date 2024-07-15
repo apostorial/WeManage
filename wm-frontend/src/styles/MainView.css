@@ -1,0 +1,23 @@
+.main-view {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    /* other styles */
+  }
+  
+  .board {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  .no-board-selected {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #888;
+  }
