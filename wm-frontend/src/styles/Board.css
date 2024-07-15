@@ -1,0 +1,13 @@
+/* src/styles/Board.css */
+.board {
+    padding: 20px;
+    height: calc(100vh - 40px); /* Adjust based on your layout */
+    overflow-y: hidden;
+  }
+  
+  .columns-container {
+    display: flex;
+    overflow-x: auto;
+    height: calc(100% - 60px); /* Adjust based on your board title height */
+    padding: 20px 0;
+  }
