@@ -38,13 +38,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board createBoard(Board board) throws ServiceException {
+    public Board createBoard(String name, String description) throws ServiceException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object principal = authentication.getPrincipal();
             User userDetails = (User) principal;
             Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+            Board board = new Board();
+            board.setName(name);
+            board.setDescription(description);
             board.setOwner(authenticatedUser);
             return boardRepository.save(board);
         } catch (Exception e) {
