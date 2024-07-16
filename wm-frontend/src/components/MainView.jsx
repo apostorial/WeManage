@@ -46,6 +46,14 @@ const MainView = () => {
     }
   };
 
+  const handleBoardNameUpdate = (boardId, newName) => {
+    setBoards((prevBoards) =>
+      prevBoards.map((board) =>
+        board.id === boardId ? { ...board, name: newName } : board
+      )
+    );
+  };
+
   return (
     <div className="main-view">
       <Sidebar 
@@ -54,7 +62,7 @@ const MainView = () => {
         onAddBoard={handleAddBoard}
       />
       {selectedBoard ? (
-        <Board board={selectedBoard} />
+        <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
       ) : (
         <div className="no-board-selected">Select a board to view its details</div>
       )}
