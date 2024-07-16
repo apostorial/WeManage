@@ -42,7 +42,7 @@ public class Card {
 
     @JsonProperty("column")
     public String getColumnForSerialization() {
-        return id;
+        return column.getId();
     }
 
     @JsonProperty("labels")
