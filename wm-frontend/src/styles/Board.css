@@ -1,13 +1,44 @@
-/* src/styles/Board.css */
 .board {
     padding: 20px;
-    height: calc(100vh - 40px); /* Adjust based on your layout */
+    height: calc(100vh - 40px);
     overflow-y: hidden;
   }
   
   .columns-container {
     display: flex;
     overflow-x: auto;
-    height: calc(100% - 60px); /* Adjust based on your board title height */
+    height: calc(100% - 60px);
     padding: 20px 0;
   }
+
+  .board-header {
+    display: flex;
+    align-items: center;
+  }
+  
+
+  .add-column-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 3px;
+
+  }
+
+  .board-name-input {
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .board-name {
+    cursor: pointer;
+  }
+  
