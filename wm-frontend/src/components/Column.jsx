@@ -1,18 +1,23 @@
-// src/components/Column.jsx
 import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import Card from './Card';
 import '../styles/Column.css';
 
-const Column = ({ column }) => {
+const Column = ({ column, onColumnNameUpdate }) => {
   const [cards, setCards] = useState([]);
   const [error, setError] = useState(null);
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardName, setNewCardName] = useState('');
+  const [isEditingColumnName, setIsEditingColumnName] = useState(false);
+  const [columnName, setColumnName] = useState(column.name);
 
   useEffect(() => {
     fetchCards();
   }, [column.id]);
+
+  useEffect(() => {
+    setColumnName(column.name);
+  }, [column]);
 
   const fetchCards = async () => {
     try {
@@ -47,6 +52,25 @@ const Column = ({ column }) => {
     }
   };
 
+  const updateColumnName = async () => {
+    try {
+      await axios.put(`http://localhost:8080/api/columns/update/${column.id}`, new URLSearchParams({ name: columnName }));
+      setIsEditingColumnName(false);
+      onColumnNameUpdate(column.id, columnName);
+    } catch (error) {
+      console.error('Error updating column name:', error);
+      setError('Error updating column name. Please try again.');
+    }
+  };
+
+  const handleCardUpdate = (cardId, updatedData) => {
+    if (updatedData === null) {
+      setCards(cards.filter(card => card.id !== cardId));
+    } else {
+      setCards(cards.map(card => (card.id === cardId ? { ...card, ...updatedData } : card)));
+    }
+  };
+
   if (error) {
     return <div className="error">{error}</div>;
   }
@@ -54,12 +78,23 @@ const Column = ({ column }) => {
   return (
     <div className="column">
       <div className="column-header">
-        <h3>{column.name}</h3>
+        {isEditingColumnName ? (
+          <input
+            type="text"
+            value={columnName}
+            onChange={(e) => setColumnName(e.target.value)}
+            onBlur={updateColumnName}
+            className="column-name-input"
+            autoFocus
+          />
+        ) : (
+          <h3 onClick={() => setIsEditingColumnName(true)}>{columnName}</h3>
+        )}
         <button onClick={() => setIsAddingCard(true)} className="add-card-btn">+</button>
       </div>
       <div className="cards-container">
         {cards.map(card => (
-          <Card key={card.id} card={card} />
+          <Card key={card.id} card={card} onUpdate={handleCardUpdate} column={column.id} />
         ))}
       </div>
       {isAddingCard && (

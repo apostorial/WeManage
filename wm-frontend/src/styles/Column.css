@@ -1,4 +1,3 @@
-/* src/styles/Column.css */
 .column {
     min-width: 280px;
     width: 280px;
@@ -55,3 +54,17 @@
   .add-card-form button {
     margin-right: 5px;
   }
+
+  .delete-column-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .delete-column-btn:hover {
+    background-color: darkred;
+  }
+  
