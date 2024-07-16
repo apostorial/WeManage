@@ -30,7 +30,7 @@ public class Column {
 
     @JsonProperty("board")
     public String getBoardForSerialization() {
-        return id;
+        return board.getId();
     }
 
     @JsonProperty("cards")
@@ -63,5 +63,10 @@ public class Column {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Column{id='" + id + "', name='" + name + "'}"; // Avoid referencing cards
     }
 }
