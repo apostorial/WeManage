@@ -191,15 +191,6 @@ input:-webkit-autofill:active {
 	opacity: 100;
 	position: absolute;
 }
-/* .checkmark-box {
-  	width: 18px;
-  	position: relative;
-  	border-radius: 4px;
-  	background-color: #141414;
-  	border: 0.6px solid rgba(239, 239, 239, 0.15);
-  	box-sizing: border-box;
-  	height: 18px;
-} */
 
 .checkmark-box {
 	display: flex;
