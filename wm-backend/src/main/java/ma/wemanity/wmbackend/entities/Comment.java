@@ -27,12 +27,12 @@ public class Comment {
 
     @JsonProperty("card")
     public String getCardForSerialization() {
-        return id;
+        return card.getId();
     }
 
     @JsonProperty("author")
     public String getAuthorForSerialization() {
-        return id;
+        return author.getId();
     }
 
     @Override
