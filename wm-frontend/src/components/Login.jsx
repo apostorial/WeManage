@@ -35,7 +35,7 @@ const Login = () => {
 
       if (response.status === 200) {
         setErrorMessage('');
-        navigate('/sidebar');
+        navigate('/main');
       } else {
         setErrorMessage('Incorrect credentials. Please try again.');
       }
