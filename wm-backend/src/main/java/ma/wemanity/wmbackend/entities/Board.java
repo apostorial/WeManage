@@ -38,7 +38,7 @@ public class Board {
 
     @JsonProperty("owner")
     public String getOwnerForSerialization() {
-        return id;
+        return owner.getId();
     }
 
     @JsonProperty("members")
@@ -66,4 +66,10 @@ public class Board {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "Board{id='" + id + "', name='" + name + "'}";
+    }
+
 }
