@@ -46,6 +46,19 @@ const MainView = () => {
     }
   };
 
+  const handleDeleteBoard = async (boardId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/boards/delete/${boardId}`);
+      setBoards(prevBoards => prevBoards.filter(board => board.id !== boardId));
+      if (selectedBoard && selectedBoard.id === boardId) {
+        setSelectedBoard(null);
+      }
+    } catch (error) {
+      console.error('Error deleting board:', error);
+      setError('Error deleting board. Please try again.');
+    }
+  };
+
   const handleBoardNameUpdate = (boardId, newName) => {
     setBoards((prevBoards) =>
       prevBoards.map((board) =>
@@ -60,6 +73,7 @@ const MainView = () => {
         boards={boards} 
         onBoardSelect={handleBoardSelect}
         onAddBoard={handleAddBoard}
+        onDeleteBoard={handleDeleteBoard}
       />
       {selectedBoard ? (
         <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
