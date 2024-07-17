@@ -50,3 +50,22 @@
     padding: 5px 10px;
   }
   
+  .board-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .delete-board-button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .delete-board-button:hover {
+    background: darkred;
+  }
+  
