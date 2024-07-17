@@ -78,14 +78,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
     <div className="board">
       <h2>
         {isEditingBoardName ? (
-          <input
-            type="text"
-            value={boardName}
-            onChange={(e) => setBoardName(e.target.value)}
-            onBlur={updateBoardName}
-            className="board-name-input"
-            autoFocus
-          />
+          <input type="text" value={boardName} onChange={(e) => setBoardName(e.target.value)} onBlur={updateBoardName} className="board-name-input" autoFocus />
         ) : (
           <span onClick={() => setIsEditingBoardName(true)} className="board-name">{boardName}</span>
         )}
@@ -93,25 +86,14 @@ const Board = ({ board, onBoardNameUpdate }) => {
       </h2>
       {isInputVisible && (
         <div className="input-container">
-          <input
-            type="text"
-            value={newColumnName}
-            onChange={(e) => setNewColumnName(e.target.value)}
-            placeholder="Column name"
-            className="column-input"
-          />
+          <input type="text" value={newColumnName} onChange={(e) => setNewColumnName(e.target.value)} placeholder="Column name" className="column-input" />
           <button onClick={addColumn}>Create</button>
         </div>
       )}
       <p>{board.description}</p>
       <div className="columns-container">
         {columns.map(column => (
-          <Column
-            key={column.id}
-            column={column}
-            onColumnNameUpdate={handleColumnNameUpdate}
-            onDeleteColumn={handleDeleteColumn}
-          />
+          <Column key={column.id} column={column} onColumnNameUpdate={handleColumnNameUpdate} onDeleteColumn={handleDeleteColumn} />
         ))}
       </div>
     </div>

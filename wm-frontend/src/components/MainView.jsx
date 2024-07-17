@@ -69,12 +69,7 @@ const MainView = () => {
 
   return (
     <div className="main-view">
-      <Sidebar 
-        boards={boards} 
-        onBoardSelect={handleBoardSelect}
-        onAddBoard={handleAddBoard}
-        onDeleteBoard={handleDeleteBoard}
-      />
+      <Sidebar boards={boards} onBoardSelect={handleBoardSelect} onAddBoard={handleAddBoard} onDeleteBoard={handleDeleteBoard} />
       {selectedBoard ? (
         <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
       ) : (

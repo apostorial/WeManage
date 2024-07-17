@@ -40,7 +40,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn }) => {
     try {
       const response = await axios.post('http://localhost:8080/api/cards/create', formData, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
       });
       setCards([...cards, response.data]);
@@ -89,14 +89,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn }) => {
     <div className="column">
       <div className="column-header">
         {isEditingColumnName ? (
-          <input
-            type="text"
-            value={columnName}
-            onChange={(e) => setColumnName(e.target.value)}
-            onBlur={updateColumnName}
-            className="column-name-input"
-            autoFocus
-          />
+          <input type="text" value={columnName} onChange={(e) => setColumnName(e.target.value)} onBlur={updateColumnName} className="column-name-input" autoFocus/>
         ) : (
           <h3 onClick={() => setIsEditingColumnName(true)}>{columnName}</h3>
         )}
@@ -110,12 +103,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn }) => {
       </div>
       {isAddingCard && (
         <form onSubmit={handleAddCard} className="add-card-form">
-          <input
-            type="text"
-            value={newCardName}
-            onChange={(e) => setNewCardName(e.target.value)}
-            placeholder="Enter card name"
-          />
+          <input type="text" value={newCardName} onChange={(e) => setNewCardName(e.target.value)} placeholder="Enter card name" />
           <button type="submit">Add</button>
           <button type="button" onClick={() => setIsAddingCard(false)}>Cancel</button>
         </form>
