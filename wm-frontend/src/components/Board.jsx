@@ -66,6 +66,10 @@ const Board = ({ board, onBoardNameUpdate }) => {
     );
   };
 
+  const handleDeleteColumn = (columnId) => {
+    setColumns(columns.filter(col => col.id !== columnId));
+  };
+
   if (error) {
     return <div className="error">{error}</div>;
   }
@@ -106,6 +110,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
             key={column.id}
             column={column}
             onColumnNameUpdate={handleColumnNameUpdate}
+            onDeleteColumn={handleDeleteColumn}
           />
         ))}
       </div>
