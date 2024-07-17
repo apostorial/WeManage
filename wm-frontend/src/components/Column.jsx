@@ -3,7 +3,7 @@ import axios from '../axios-config.js';
 import Card from './Card';
 import '../styles/Column.css';
 
-const Column = ({ column, onColumnNameUpdate }) => {
+const Column = ({ column, onColumnNameUpdate, onDeleteColumn }) => {
   const [cards, setCards] = useState([]);
   const [error, setError] = useState(null);
   const [isAddingCard, setIsAddingCard] = useState(false);
@@ -63,6 +63,16 @@ const Column = ({ column, onColumnNameUpdate }) => {
     }
   };
 
+  const handleDeleteColumn = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/columns/delete/${column.id}`);
+      onDeleteColumn(column.id);
+    } catch (error) {
+      console.error('Error deleting column:', error);
+      setError('Error deleting column. Please try again.');
+    }
+  };
+
   const handleCardUpdate = (cardId, updatedData) => {
     if (updatedData === null) {
       setCards(cards.filter(card => card.id !== cardId));
@@ -91,6 +101,7 @@ const Column = ({ column, onColumnNameUpdate }) => {
           <h3 onClick={() => setIsEditingColumnName(true)}>{columnName}</h3>
         )}
         <button onClick={() => setIsAddingCard(true)} className="add-card-btn">+</button>
+        <button onClick={handleDeleteColumn} className="delete-column-btn">Delete</button>
       </div>
       <div className="cards-container">
         {cards.map(card => (
