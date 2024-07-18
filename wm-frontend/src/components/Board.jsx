@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import Column from './Column';
 import '../styles/Board.css';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const Board = ({ board, onBoardNameUpdate }) => {
   const [columns, setColumns] = useState([]);
@@ -17,18 +16,18 @@ const Board = ({ board, onBoardNameUpdate }) => {
   }, [board]);
 
   useEffect(() => {
+    const fetchColumns = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/columns/board/${board.id}`);
+        setColumns(response.data || []);
+      } catch (error) {
+        console.error('Error fetching columns:', error);
+        setError('Error loading columns. Please try again.');
+      }
+    };
+
     fetchColumns();
   }, [board.id]);
-
-  const fetchColumns = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/columns/board/${board.id}`);
-      setColumns(response.data || []);
-    } catch (error) {
-      console.error('Error fetching columns:', error);
-      setError('Error loading columns. Please try again.');
-    }
-  };
 
   const addColumn = async () => {
     if (!newColumnName) return;
@@ -71,25 +70,6 @@ const Board = ({ board, onBoardNameUpdate }) => {
     setColumns(columns.filter(col => col.id !== columnId));
   };
 
-  const onDragEnd = async (result) => {
-    if (!result.destination) return;
-
-    const newColumns = Array.from(columns);
-    const [reorderedColumn] = newColumns.splice(result.source.index, 1);
-    newColumns.splice(result.destination.index, 0, reorderedColumn);
-
-    setColumns(newColumns);
-
-    try {
-      await axios.put(`http://localhost:8080/api/boards/${board.id}/reorder-columns`, 
-        newColumns.map(col => col.id)
-      );
-    } catch (error) {
-      console.error('Failed to update column order:', error);
-      fetchColumns();
-    }
-  };
-
   if (error) {
     return <div className="error">{error}</div>;
   }
@@ -111,36 +91,11 @@ const Board = ({ board, onBoardNameUpdate }) => {
         </div>
       )}
       <p>{board.description}</p>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="board" direction="horizontal" type="column">
-          {(provided) => (
-            <div 
-              {...provided.droppableProps} 
-              ref={provided.innerRef} 
-              className="columns-container"
-            >
-              {columns.map((column, index) => (
-                <Draggable key={column.id} draggableId={column.id} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <Column 
-                        column={column} 
-                        onColumnNameUpdate={handleColumnNameUpdate} 
-                        onDeleteColumn={handleDeleteColumn} 
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <div className="columns-container">
+        {columns.map(column => (
+          <Column key={column.id} column={column} onColumnNameUpdate={handleColumnNameUpdate} onDeleteColumn={handleDeleteColumn} />
+        ))}
+      </div>
     </div>
   );
 };
