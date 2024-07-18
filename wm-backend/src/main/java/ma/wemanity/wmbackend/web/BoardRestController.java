@@ -77,4 +77,14 @@ public class BoardRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/{boardId}/reorder-columns")
+    public ResponseEntity<Board> reorderColumns(@PathVariable String boardId, @RequestBody List<String> columnIds) {
+        try {
+            Board board = boardService.reorderColumns(boardId, columnIds);
+            return new ResponseEntity<>(board, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
