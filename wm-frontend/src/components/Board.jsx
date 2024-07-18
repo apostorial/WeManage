@@ -153,11 +153,11 @@ const Board = ({ board, onBoardNameUpdate }) => {
           cards: newCards,
         };
   
-        setColumns(prevColumns =>
-          prevColumns.map(col =>
-            col.id === newColumn.id ? newColumn : col
-          )
+        const newColumns = columns.map(col =>
+          col.id === newColumn.id ? newColumn : col
         );
+  
+        setColumns(newColumns);
   
         try {
           await axios.put(`http://localhost:8080/api/columns/${sourceColumn.id}/reorder-cards`, newCards.map(card => card.id));
@@ -181,18 +181,26 @@ const Board = ({ board, onBoardNameUpdate }) => {
           cards: destCards,
         };
   
-        setColumns(prevColumns =>
-          prevColumns.map(col =>
-            col.id === newSourceColumn.id ? newSourceColumn :
-            col.id === newDestColumn.id ? newDestColumn : col
-          )
+        const newColumns = columns.map(col =>
+          col.id === newSourceColumn.id ? newSourceColumn :
+          col.id === newDestColumn.id ? newDestColumn : col
         );
   
+        setColumns(newColumns);
+  
         try {
+          // First, move the card to the new column
           await axios.put(`http://localhost:8080/api/cards/move/${draggableId}/column/${destination.droppableId}`);
+  
+          // Then, reorder the cards in the destination column
+          await axios.put(`http://localhost:8080/api/columns/${destination.droppableId}/reorder-cards`, 
+            destCards.map(card => card.id)
+          );
         } catch (error) {
-          console.error('Error moving card:', error);
-          setError('Error moving card. Please try again.');
+          console.error('Error moving or reordering card:', error);
+          setError('Error updating card position. Please try again.');
+          // Optionally, revert the state if the API calls fail
+          // setColumns(columns);
         }
       }
     }
