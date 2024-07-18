@@ -3,6 +3,7 @@ package ma.wemanity.wmbackend.web;
 import lombok.AllArgsConstructor;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
+import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.services.CardService;
 import org.springframework.http.HttpStatus;
@@ -85,6 +86,18 @@ public class CardRestController {
             Card updatedCard = cardService.removeLabelFromCard(id, labelId);
             return new ResponseEntity<>(updatedCard, HttpStatus.OK);
         } catch (CardNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/move/{cardId}/column/{columnId}")
+    public ResponseEntity<Card> moveCard(@PathVariable String cardId, @PathVariable String columnId) {
+        try {
+            Card card = cardService.moveCard(cardId, columnId);
+            return new ResponseEntity<>(card, HttpStatus.OK);
+        } catch (CardNotFoundException | ColumnNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
