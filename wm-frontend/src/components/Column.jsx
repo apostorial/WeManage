@@ -56,12 +56,21 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
         <button onClick={() => onDeleteColumn(column.id)} className="delete-column-btn">Delete</button>
       </div>
       <Droppable droppableId={column.id}>
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container">
+        {(provided, snapshot) => (
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            className={`cards-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
+            style={{ minHeight: '50px' }} // Ensure there's always a drop target
+          >
             {column.cards.map((card, index) => (
               <Draggable key={card.id} draggableId={card.id} index={index}>
                 {(provided) => (
-                  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
                     <Card
                       key={card.id}
                       card={card}
