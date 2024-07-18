@@ -71,4 +71,14 @@ public class ColumnRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/{columnId}/reorder-cards")
+    public ResponseEntity<Column> reorderCards(@PathVariable String columnId, @RequestBody List<String> cardIds) {
+        try {
+            Column column = columnService.reorderCards(columnId, cardIds);
+            return new ResponseEntity<>(column, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
