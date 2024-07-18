@@ -9,10 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor
@@ -23,7 +20,7 @@ public class Board {
     private String name;
     private String description;
     @DBRef
-    private Set<Column> columns = new HashSet<>();
+    private List<Column> columns = new ArrayList<>();
     @DBRef
     private Member owner;
     @DBRef

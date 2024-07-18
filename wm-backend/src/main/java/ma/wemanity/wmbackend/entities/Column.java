@@ -10,10 +10,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor
@@ -26,7 +23,7 @@ public class Column {
     @DBRef
     private Board board;
     @DBRef
-    private Set<Card> cards = new HashSet<>();
+    private List<Card> cards = new ArrayList<>();
 
     @JsonProperty("board")
     public String getBoardForSerialization() {
