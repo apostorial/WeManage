@@ -2,37 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import Card from './Card';
 import '../styles/Column.css';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import {DndContext, MouseSensor, TouchSensor, useSensor, useSensors} from '@dnd-kit/core';
-import {SortableContext, verticalListSortingStrategy, arrayMove} from '@dnd-kit/sortable';
 
-const Column = ({ column, onColumnNameUpdate, onDeleteColumn, isDragging }) => {
+const Column = ({ column, onColumnNameUpdate, onDeleteColumn }) => {
   const [cards, setCards] = useState([]);
   const [error, setError] = useState(null);
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardName, setNewCardName] = useState('');
   const [isEditingColumnName, setIsEditingColumnName] = useState(false);
   const [columnName, setColumnName] = useState(column.name);
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: column.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor)
-  );
 
   useEffect(() => {
     fetchCards();
@@ -104,67 +81,29 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, isDragging }) => {
     }
   };
 
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-  
-    if (active.id !== over.id) {
-      const oldIndex = cards.findIndex((card) => card.id === active.id);
-      const newIndex = cards.findIndex((card) => card.id === over.id);
-  
-      const newCards = arrayMove(cards, oldIndex, newIndex);
-      setCards(newCards);
-  
-      const cardIds = newCards.map((card) => card.id);
-  
-      try {
-        await axios.put(`http://localhost:8080/api/columns/${column.id}/reorder-cards`, cardIds);
-      } catch (error) {
-        console.error('Error reordering cards:', error);
-        console.log("Error response:", error.response);
-        setError('Error reordering cards. Please try again.');
-      }
-    }
-  };
-
   if (error) {
     return <div className="error">{error}</div>;
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="column">
+    <div className="column">
       <div className="column-header">
         {isEditingColumnName ? (
-          <input 
-            type="text" 
-            value={columnName} 
-            onChange={(e) => setColumnName(e.target.value)} 
-            onBlur={updateColumnName} 
-            className="column-name-input" 
-            autoFocus
-          />
+          <input type="text" value={columnName} onChange={(e) => setColumnName(e.target.value)} onBlur={updateColumnName} className="column-name-input" autoFocus/>
         ) : (
           <h3 onClick={() => setIsEditingColumnName(true)}>{columnName}</h3>
         )}
         <button onClick={() => setIsAddingCard(true)} className="add-card-btn">+</button>
         <button onClick={handleDeleteColumn} className="delete-column-btn">Delete</button>
       </div>
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <SortableContext items={cards.map((card) => card.id)} strategy={verticalListSortingStrategy}>
-          <div className="cards-container">
-            {cards.map((card) => (
-              <Card key={card.id} card={card} onUpdate={handleCardUpdate} column={column.id} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+      <div className="cards-container">
+        {cards.map(card => (
+          <Card key={card.id} card={card} onUpdate={handleCardUpdate} column={column.id} />
+        ))}
+      </div>
       {isAddingCard && (
         <form onSubmit={handleAddCard} className="add-card-form">
-          <input 
-            type="text" 
-            value={newCardName} 
-            onChange={(e) => setNewCardName(e.target.value)} 
-            placeholder="Enter card name" 
-          />
+          <input type="text" value={newCardName} onChange={(e) => setNewCardName(e.target.value)} placeholder="Enter card name" />
           <button type="submit">Add</button>
           <button type="button" onClick={() => setIsAddingCard(false)}>Cancel</button>
         </form>

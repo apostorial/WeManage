@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import axios from '../axios-config.js';
 import '../styles/Card.css';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
 const Card = ({ card, onUpdate, column }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -14,19 +12,6 @@ const Card = ({ card, onUpdate, column }) => {
     number: card.number || '',
     website: card.website || '',
   });
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: card.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
 
   const handleClick = () => {
     setIsPopupOpen(true);
@@ -89,14 +74,7 @@ const Card = ({ card, onUpdate, column }) => {
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className="card-column"
-      onClick={handleClick}
-    >
+    <div className="card-column" onClick={handleClick}>
       <h4>{card.name}</h4>
       {isPopupOpen && (
         <div className="popup">
