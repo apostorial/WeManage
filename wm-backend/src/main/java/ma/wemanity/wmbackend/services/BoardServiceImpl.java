@@ -3,10 +3,13 @@ package ma.wemanity.wmbackend.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Board;
+import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.entities.Member;
 import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
+import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.repositories.BoardRepository;
+import ma.wemanity.wmbackend.repositories.ColumnRepository;
 import ma.wemanity.wmbackend.repositories.MemberRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +27,7 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final ColumnRepository columnRepository;
 
     @Override
     public Board getBoard(String id) throws ServiceException {
@@ -100,5 +105,24 @@ public class BoardServiceImpl implements BoardService {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return boardRepository.findByOwnerId(member.getId());
+    }
+
+    @Override
+    public Board reorderColumns(String boardId, List<String> columnIds) throws ServiceException {
+        try {
+            Board board = getBoard(boardId);
+            List<Column> reorderedColumns = new ArrayList<>();
+
+            for (String columnId : columnIds) {
+                Column column = columnRepository.findById(columnId)
+                        .orElseThrow(() -> new ColumnNotFoundException("Column not found with id: " + columnId));
+                reorderedColumns.add(column);
+            }
+
+            board.setColumns(reorderedColumns);
+            return boardRepository.save(board);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to reorder columns", e);
+        }
     }
 }

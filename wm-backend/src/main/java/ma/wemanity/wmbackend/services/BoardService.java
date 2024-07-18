@@ -14,4 +14,5 @@ public interface BoardService {
     Board updateBoard(String id, String name, String description, UserDetails authenticatedUser) throws BoardNotFoundException, ServiceException;
     void deleteBoard(String id, UserDetails userDetails) throws BoardNotFoundException, ServiceException;
     List<Board> getBoardsByAuthenticatedUser(Authentication authentication) throws ServiceException;
+    Board reorderColumns(String boardId, List<String> columnIds) throws BoardNotFoundException, ServiceException;
 }
