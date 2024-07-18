@@ -11,6 +11,7 @@ import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.ColumnRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,9 +91,10 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public List<Column> getColumnsByBoardId(String id) throws ServiceException {
+    public List<Column> getColumnsByBoardId(String boardId) throws ServiceException {
         try {
-            return columnRepository.findByBoardId(id);
+            Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardNotFoundException("Board not found with id: " + boardId));
+            return new ArrayList<>(board.getColumns());
         } catch (Exception e) {
             throw new ServiceException("Failed to get columns by boardId", e);
         }
