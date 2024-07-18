@@ -1,7 +1,9 @@
 package ma.wemanity.wmbackend.services;
 
 import ma.wemanity.wmbackend.entities.Card;
+import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
+import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 
 import java.util.List;
@@ -14,4 +16,5 @@ public interface CardService {
     void deleteCard(String id) throws CardNotFoundException, ServiceException;
     List<Card> getCardsByColumnId(String id) throws ServiceException;
     Card removeLabelFromCard(String id, String labelId) throws CardNotFoundException, ServiceException;
+    Card moveCard(String id, String columnId) throws CardNotFoundException, ColumnNotFoundException, ServiceException;
 }

@@ -156,4 +156,24 @@ public class CardServiceImpl implements CardService {
             throw new ServiceException("Failed to remove label from card", e);
         }
     }
+
+    @Override
+    public Card moveCard(String cardId, String columnId) throws ServiceException {
+        try {
+            Card card = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException("Card not found with id:" + cardId));
+            Column column = columnRepository.findById(columnId).orElseThrow(() -> new ColumnNotFoundException("Column not found with id: " + columnId));
+            Column oldColumn = card.getColumn();
+
+            oldColumn.removeCard(card);
+            columnRepository.save(oldColumn);
+
+            column.getCards().add(card);
+            columnRepository.save(column);
+
+            card.setColumn(column);
+            return cardRepository.save(card);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to move card", e);
+        }
+    }
 }
