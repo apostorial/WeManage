@@ -3,11 +3,14 @@ package ma.wemanity.wmbackend.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Board;
+import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
+import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.repositories.BoardRepository;
+import ma.wemanity.wmbackend.repositories.CardRepository;
 import ma.wemanity.wmbackend.repositories.ColumnRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class ColumnServiceImpl implements ColumnService {
     private final ColumnRepository columnRepository;
     private final BoardRepository boardRepository;
+    private final CardRepository cardRepository;
 
     @Override
     public Column getColumn(String id) throws ServiceException {
@@ -97,6 +101,25 @@ public class ColumnServiceImpl implements ColumnService {
             return new ArrayList<>(board.getColumns());
         } catch (Exception e) {
             throw new ServiceException("Failed to get columns by boardId", e);
+        }
+    }
+
+    @Override
+    public Column reorderCards(String columnId, List<String> cardIds) throws ServiceException {
+        try {
+            Column column = getColumn(columnId);
+            List<Card> reorderedCards = new ArrayList<>();
+
+            for (String cardId : cardIds) {
+                Card card = cardRepository.findById(cardId)
+                        .orElseThrow(() -> new CardNotFoundException("Card not found with id: " + cardId));
+                reorderedCards.add(card);
+            }
+
+            column.setCards(reorderedCards);
+            return columnRepository.save(column);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to reorder cards", e);
         }
     }
 }

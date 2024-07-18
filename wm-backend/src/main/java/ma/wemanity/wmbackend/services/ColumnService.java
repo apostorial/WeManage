@@ -12,4 +12,5 @@ public interface ColumnService {
     Column updateColumn(String id, String name, String description) throws ColumnNotFoundException, ServiceException;
     void deleteColumn(String id) throws ColumnNotFoundException, ServiceException;
     List<Column> getColumnsByBoardId(String id) throws ServiceException;
+    Column reorderCards(String columnId, List<String> cardIds) throws ColumnNotFoundException, ServiceException;
 }
