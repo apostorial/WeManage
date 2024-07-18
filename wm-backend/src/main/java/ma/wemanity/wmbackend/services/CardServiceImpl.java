@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.entities.Label;
-import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
-import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
-import ma.wemanity.wmbackend.exceptions.LabelNotFoundException;
-import ma.wemanity.wmbackend.exceptions.ServiceException;
+import ma.wemanity.wmbackend.exceptions.*;
 import ma.wemanity.wmbackend.repositories.CardRepository;
 import ma.wemanity.wmbackend.repositories.ColumnRepository;
 import ma.wemanity.wmbackend.repositories.LabelRepository;
@@ -126,9 +123,10 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<Card> getCardsByColumnId(String id) throws ServiceException {
+    public List<Card> getCardsByColumnId(String columnId) throws ServiceException {
         try {
-            return cardRepository.findByColumnId(id);
+            Column column = columnRepository.findById(columnId).orElseThrow(() -> new ColumnNotFoundException("Column not found with id: " + columnId));
+            return new ArrayList<>(column.getCards());
         } catch (Exception e) {
             throw new ServiceException("Failed to get cards by columnId", e);
         }
