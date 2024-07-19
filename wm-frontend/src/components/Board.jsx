@@ -143,7 +143,6 @@ const Board = ({ board, onBoardNameUpdate }) => {
       const draggedCard = sourceColumn.cards.find(card => card.id === draggableId);
   
       if (source.droppableId === destination.droppableId) {
-        // Reordering within the same column
         const newCards = Array.from(sourceColumn.cards);
         newCards.splice(source.index, 1);
         newCards.splice(destination.index, 0, draggedCard);
@@ -166,7 +165,6 @@ const Board = ({ board, onBoardNameUpdate }) => {
           setError('Error reordering cards. Please try again.');
         }
       } else {
-        // Moving card to a different column
         const sourceCards = Array.from(sourceColumn.cards);
         sourceCards.splice(source.index, 1);
         const newSourceColumn = {
@@ -189,10 +187,8 @@ const Board = ({ board, onBoardNameUpdate }) => {
         setColumns(newColumns);
   
         try {
-          // First, move the card to the new column
           await axios.put(`http://localhost:8080/api/cards/move/${draggableId}/column/${destination.droppableId}`);
   
-          // Then, reorder the cards in the destination column
           await axios.put(`http://localhost:8080/api/columns/${destination.droppableId}/reorder-cards`, 
             destCards.map(card => card.id)
           );
