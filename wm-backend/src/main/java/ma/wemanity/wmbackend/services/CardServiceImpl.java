@@ -55,16 +55,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card updateCard(String id, String name, String company, String position, String email, String number, String website, String columnId, Set<String> labelIds) throws ServiceException {
+    public Card updateCard(String id, String name, String company, String position, String email, String number, String website, Set<String> labelIds) throws ServiceException {
         try {
             Optional<Card> optionalCard = cardRepository.findById(id);
             if (optionalCard.isEmpty()) {
                 throw new CardNotFoundException("Card not found with id: " + id);
             }
             Card card = optionalCard.get();
-            Column existingColumn = card.getColumn();
-            existingColumn.removeCard(card);
-            columnRepository.save(existingColumn);
 
             card.setName(name);
             card.setCompany(company);
@@ -72,12 +69,6 @@ public class CardServiceImpl implements CardService {
             card.setEmail(email);
             card.setNumber(number);
             card.setWebsite(website);
-
-            Column column = columnRepository.findById(columnId)
-                    .orElseThrow(() -> new ColumnNotFoundException("Column not found with id: " + columnId));
-            card.setColumn(column);
-            column.addCard(card);
-            columnRepository.save(column);
 
             for (Label label : card.getLabels()) {
                 label.getCards().remove(card);
