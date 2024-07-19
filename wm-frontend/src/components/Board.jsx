@@ -199,8 +199,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
         } catch (error) {
           console.error('Error moving or reordering card:', error);
           setError('Error updating card position. Please try again.');
-          // Optionally, revert the state if the API calls fail
-          // setColumns(columns);
+          setColumns(columns);
         }
       }
     }
