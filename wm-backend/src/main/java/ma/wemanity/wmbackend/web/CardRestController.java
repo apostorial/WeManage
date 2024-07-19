@@ -46,10 +46,9 @@ public class CardRestController {
                                            @RequestParam(name = "email", required = false) String email,
                                            @RequestParam(name = "number", required = false) String number,
                                            @RequestParam(name = "website", required = false) String website,
-                                           @RequestParam(name = "columnId", required = false) String columnId,
                                            @RequestParam(name = "labelIds", required = false) Set<String> labelIds) {
         try {
-            Card card = cardService.updateCard(id, name, company, position, email, number, website, columnId, labelIds);
+            Card card = cardService.updateCard(id, name, company, position, email, number, website, labelIds);
             return new ResponseEntity<>(card, HttpStatus.OK);
         } catch (CardNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
