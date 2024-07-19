@@ -37,6 +37,15 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
     }
   };
 
+  const handleDeleteColumn = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/columns/delete/${column.id}`);
+      onDeleteColumn(column.id);
+    } catch (error) {
+      console.error('Error deleting column:', error);
+    }
+  };
+
   return (
     <div className="column">
       <div className="column-header">
@@ -53,7 +62,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
           <h3 onClick={() => setIsEditingColumnName(true)}>{columnName}</h3>
         )}
         <button onClick={() => setIsAddingCard(true)} className="add-card-btn">+</button>
-        <button onClick={() => onDeleteColumn(column.id)} className="delete-column-btn">Delete</button>
+        <button onClick={handleDeleteColumn} className="delete-column-btn">Delete</button>
       </div>
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
@@ -61,7 +70,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
             {...provided.droppableProps}
             ref={provided.innerRef}
             className={`cards-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-            style={{ minHeight: '50px' }} // Ensure there's always a drop target
+            style={{ minHeight: '50px' }}
           >
             {column.cards.map((card, index) => (
               <Draggable key={card.id} draggableId={card.id} index={index}>
@@ -74,7 +83,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
                     <Card
                       key={card.id}
                       card={card}
-                      onUpdate={(updatedCard) => onUpdateCard(column.id, card.id, updatedCard)}
+                      onUpdate={(updatedCard) => onUpdateCard(column.id, updatedCard)}
                       onDelete={() => onDeleteCard(column.id, card.id)}
                     />
                   </div>

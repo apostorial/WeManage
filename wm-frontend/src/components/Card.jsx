@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from '../axios-config.js';
 import '../styles/Card.css';
 
-const Card = ({ card, onUpdate, column }) => {
+const Card = ({ card, onUpdate, onDelete }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: card.name || '',
@@ -37,8 +37,10 @@ const Card = ({ card, onUpdate, column }) => {
         email: formData.email,
         number: formData.number,
         website: formData.website,
-        columnId: column,
+        labelIds: '',
       });
+
+      console.log('Sending payload:', Object.fromEntries(payload));
 
       const response = await axios.put(`http://localhost:8080/api/cards/update/${card.id}`,
         payload, {
@@ -49,7 +51,7 @@ const Card = ({ card, onUpdate, column }) => {
       );
   
       if (response.status === 200) {
-        onUpdate(card.id, formData);
+        onUpdate(response.data);
         setIsPopupOpen(false);
       } else {
         console.error('Failed to update card');
@@ -63,7 +65,7 @@ const Card = ({ card, onUpdate, column }) => {
     try {
       const response = await axios.delete(`http://localhost:8080/api/cards/delete/${card.id}`);
       if (response.status === 204) {
-        onUpdate(card.id, null);
+        onDelete(card.id);
         setIsPopupOpen(false);
       } else {
         console.error('Failed to delete card');

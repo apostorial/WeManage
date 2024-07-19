@@ -85,14 +85,14 @@ const Board = ({ board, onBoardNameUpdate }) => {
     );
   };
 
-  const handleUpdateCard = (columnId, cardId, updatedCard) => {
+  const handleUpdateCard = (columnId, updatedCard) => {
     setColumns(prevColumns =>
       prevColumns.map(col =>
         col.id === columnId
           ? {
               ...col,
               cards: col.cards.map(card =>
-                card.id === cardId ? { ...card, ...updatedCard } : card
+                card.id === updatedCard.id ? updatedCard : card
               )
             }
           : col
