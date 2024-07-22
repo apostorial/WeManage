@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/Navbar.css';
 import logo from '../assets/white_logo.png';
-import searchIcon from '../assets/search_icon.svg';
-import notificationIcon from '../assets/notification_icon.svg';
+import searchIcon from '../assets/search.svg';
+import notificationIcon from '../assets/notification.svg';
 
 const Navbar = () => {
   return (
