@@ -11,6 +11,7 @@ import ma.wemanity.wmbackend.repositories.ColumnRepository;
 import ma.wemanity.wmbackend.repositories.LabelRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service @AllArgsConstructor @Slf4j
@@ -43,6 +44,8 @@ public class CardServiceImpl implements CardService {
             Card card = new Card();
             card.setColumn(column);
             card.setName(name);
+            card.setCreatedAt(LocalDateTime.now());
+            card.setUpdatedAt(LocalDateTime.now());
             Card savedCard = cardRepository.save(card);
             if (!column.getCards().contains(savedCard)) {
                 column.addCard(savedCard);
@@ -69,6 +72,7 @@ public class CardServiceImpl implements CardService {
             card.setEmail(email);
             card.setNumber(number);
             card.setWebsite(website);
+            card.setUpdatedAt(LocalDateTime.now());
 
             for (Label label : card.getLabels()) {
                 label.getCards().remove(card);
@@ -140,6 +144,7 @@ public class CardServiceImpl implements CardService {
             label.removeCard(card);
             labelRepository.save(label);
             card.removeLabel(label);
+            card.setUpdatedAt(LocalDateTime.now());
             return cardRepository.save(card);
         } catch (Exception e) {
             throw new ServiceException("Failed to remove label from card", e);
@@ -160,6 +165,7 @@ public class CardServiceImpl implements CardService {
             columnRepository.save(column);
 
             card.setColumn(column);
+            card.setUpdatedAt(LocalDateTime.now());
             return cardRepository.save(card);
         } catch (Exception e) {
             throw new ServiceException("Failed to move card", e);
