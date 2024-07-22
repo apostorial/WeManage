@@ -49,6 +49,12 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleAddCard(e);
+    }
+  };
+
   return (
     <div className="to-do-list">
       <div className="todo-header">
@@ -96,9 +102,20 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
         )}
       </Droppable>
       <img src={divider} alt="Divider" className="footer-divider" />
-      <div class="add-new-button" id="addNewButton">
-        <img src={addIcon} alt="Add Icon" className="add-icon" />
-				<div class="add-new">Add new</div>
+      <div className="add-new-button" id="addNewButton">
+        {/* <img src={addIcon} alt="Add Icon" className="add-icon" /> */}
+				<div className="add-new">
+          <a href="" className="board-option add-new" onClick={handleAddCard}>
+            <img src={addIcon} alt="Card Add Icon" className="add-icon-input" />
+            <input
+              type="text"
+              value={newCardName}
+              onChange={(e) => setNewCardName(e.target.value)}
+              placeholder="Add a new card"
+              onKeyDown={handleKeyDown}
+            />
+          </a>
+        </div>
 			</div>
     </div>
   );
