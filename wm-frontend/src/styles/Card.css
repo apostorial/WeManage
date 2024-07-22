@@ -1,22 +1,75 @@
-.card-column {
-  background-color: white;
-  border-radius: 3px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  padding: 10px;
-  margin-bottom: 8px;
-  max-height:50px;
-  max-width:100%;
-  cursor:pointer;
-}
-
 .card-container {
   padding: 12px 12px 0px;
 }
 
-.card-column h4 {
-  margin-top: 0;
-  margin-bottom: 5px;
-  color:black;
+.card-column {
+  cursor:pointer;
+  width: 252px;
+  height: 74px;
+}
+
+.card1 {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #141414;
+  border-radius: 14px;
+  border: 0.60px solid rgba(235, 247, 251, 0.30);
+}
+
+.card2 {
+  width: 236px;
+  left: 8px;
+  top: 8px;
+  position: absolute;
+  justify-content: space-between;
+  align-items: center;
+  display: inline-flex;
+}
+
+.card-name {
+  color: #EBF7FB;
+  font-size: 14px;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.card-date {
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.card3 {
+  padding-left: 2px;
+  padding-right: 2px;
+  left: 8px;
+  top: 50px;
+  position: absolute;
+  background: #3E43FB;
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  display: inline-flex;
+}
+
+.card4 {
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+
+.card-position {
+  left: 8px;
+  top: 28px;
+  position: absolute;
+  opacity: 0.50;
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  word-wrap: break-word;
 }
 
 .popup {
