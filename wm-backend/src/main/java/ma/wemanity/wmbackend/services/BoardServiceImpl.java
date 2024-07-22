@@ -54,7 +54,18 @@ public class BoardServiceImpl implements BoardService {
             board.setName(name);
             board.setDescription(description);
             board.setOwner(authenticatedUser);
-            return boardRepository.save(board);
+            Board savedBoard = boardRepository.save(board);
+
+            String[] columnNames = {"To Do", "In Progress", "In Review", "Completed"};
+            for (String columnName : columnNames) {
+                Column column = new Column();
+                column.setName(columnName);
+                column.setBoard(savedBoard);
+                columnRepository.save(column);
+                savedBoard.addColumn(column);
+                boardRepository.save(savedBoard);
+            }
+            return savedBoard;
         } catch (Exception e) {
             throw new ServiceException("Failed to create board", e);
         }
