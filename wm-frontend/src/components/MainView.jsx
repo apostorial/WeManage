@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
-import Sidebar from './Sidebar';
-import Board from './Board';
+import Sidebar from './Sidebar.jsx';
+import Board from './Board.jsx';
+import Navbar from './Navbar.jsx';
 import '../styles/MainView.css';
 
 const MainView = () => {
@@ -13,7 +14,12 @@ const MainView = () => {
     const fetchBoards = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/boards/list');
-        setBoards(response.data || []);
+        const fetchedBoards = response.data || [];
+        setBoards(fetchedBoards);
+
+        if (fetchedBoards.length > 0 && !selectedBoard) {
+          setSelectedBoard(fetchedBoards[0]);
+        }
       } catch (error) {
         console.error('Error fetching boards:', error);
         setError(error);
@@ -21,7 +27,7 @@ const MainView = () => {
     };
 
     fetchBoards();
-  }, []);
+  }, [selectedBoard]);
 
   const handleBoardSelect = (board) => {
     setSelectedBoard(board);
@@ -39,7 +45,9 @@ const MainView = () => {
         },
       });
 
-      setBoards([...boards, response.data]);
+      const newBoard = response.data;
+      setBoards(prevBoards => [...prevBoards, newBoard]);
+      setSelectedBoard(newBoard);
     } catch (error) {
       console.error('Error creating board:', error);
       setError('Error creating board. Please try again.');
@@ -49,10 +57,13 @@ const MainView = () => {
   const handleDeleteBoard = async (boardId) => {
     try {
       await axios.delete(`http://localhost:8080/api/boards/delete/${boardId}`);
-      setBoards(prevBoards => prevBoards.filter(board => board.id !== boardId));
-      if (selectedBoard && selectedBoard.id === boardId) {
-        setSelectedBoard(null);
-      }
+      setBoards(prevBoards => {
+        const updatedBoards = prevBoards.filter(board => board.id !== boardId);
+        if (selectedBoard && selectedBoard.id === boardId) {
+          setSelectedBoard(updatedBoards.length > 0 ? updatedBoards[0] : null);
+        }
+        return updatedBoards;
+      });
     } catch (error) {
       console.error('Error deleting board:', error);
       setError('Error deleting board. Please try again.');
@@ -68,13 +79,16 @@ const MainView = () => {
   };
 
   return (
-    <div className="main-view">
-      <Sidebar boards={boards} onBoardSelect={handleBoardSelect} onAddBoard={handleAddBoard} onDeleteBoard={handleDeleteBoard} />
-      {selectedBoard ? (
-        <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
-      ) : (
-        <div className="no-board-selected">Select a board to view its details</div>
-      )}
+    <div className="main">
+      <Navbar />
+      <div className="content-wrapper">
+        <Sidebar boards={boards} onBoardSelect={handleBoardSelect} onAddBoard={handleAddBoard} onDeleteBoard={handleDeleteBoard} />
+        {selectedBoard ? (
+            <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
+          ) : (
+            <div className="no-board-selected">Select a board to view its details</div>
+          )}
+      </div>
     </div>
   );
 };

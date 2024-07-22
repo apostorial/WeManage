@@ -3,10 +3,10 @@ import '../index.css';
 import '../styles/Login.css';
 import axios from '../axios-config.js';
 import { useNavigate } from 'react-router-dom';
-import eyeIcon from '../assets/eye icon.svg';
-import showPassIcon from '../assets/show pass icon.svg';
-import logo from '../assets/Wemanity white logo.png';
-import background from '../assets/background we 2.svg';
+import eyeIcon from '../assets/eye.svg';
+import showPassIcon from '../assets/show_password.svg';
+import logo from '../assets/white_logo.png';
+import background from '../assets/background.svg';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
