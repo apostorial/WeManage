@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,8 @@ public class Card {
     private String email;
     private String number;
     private String website;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     @DBRef
     private Set<Comment> comments = new HashSet<>();
     @DBRef
