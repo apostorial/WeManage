@@ -139,7 +139,11 @@ const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
             <span>Settings</span>
           </a>
           <a href="" class="sidebar-item-logout" onClick={handleLogout}>
-            <img src={logoutIcon} alt="Logout Icon" className="sidebar-icon" />		
+          <svg className='sidebar-icon' width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.41699 6.29998C7.67533 3.29998 9.21699 2.07498 12.592 2.07498H12.7003C16.4253 2.07498 17.917 3.56665 17.917 7.29165V12.725C17.917 16.45 16.4253 17.9416 12.7003 17.9416H12.592C9.24199 17.9416 7.70033 16.7333 7.42533 13.7833" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.4999 10H3.0166" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4.87467 7.20834L2.08301 10L4.87467 12.7917" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>		
             <span>Logout</span>
           </a>
         </div>
