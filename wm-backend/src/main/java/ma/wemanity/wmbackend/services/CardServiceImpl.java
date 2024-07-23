@@ -1,7 +1,6 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.entities.Label;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
@@ -124,6 +123,30 @@ public class CardServiceImpl implements CardService {
             return new ArrayList<>(column.getCards());
         } catch (Exception e) {
             throw new ServiceException("Failed to get cards by columnId", e);
+        }
+    }
+
+    @Override
+    public Card addLabelToCard(String id, String labelId) throws ServiceException {
+        try {
+            Optional<Card> optionalCard = cardRepository.findById(id);
+            if (optionalCard.isEmpty()) {
+                throw new CardNotFoundException("Card not found with id: " + id);
+            }
+            Card card = optionalCard.get();
+
+            Optional<Label> optionalLabel = labelRepository.findById(labelId);
+            if (optionalLabel.isEmpty()) {
+                throw new LabelNotFoundException("Label not found with id: " + labelId);
+            }
+            Label label = optionalLabel.get();
+            label.addCard(card);
+            labelRepository.save(label);
+            card.addLabel(label);
+            card.setUpdatedAt(LocalDateTime.now());
+            return cardRepository.save(card);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to add label to card", e);
         }
     }
 
