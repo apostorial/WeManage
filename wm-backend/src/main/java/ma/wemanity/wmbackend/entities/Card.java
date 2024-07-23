@@ -10,10 +10,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor
@@ -34,7 +31,7 @@ public class Card {
     @DBRef
     private Column column;
     @DBRef
-    private Set<Label> labels = new HashSet<>();
+    private Set<Label> labels = new LinkedHashSet<>();
 
     @JsonProperty("comments")
     public List<String> getCommentsForSerialization() {
@@ -61,9 +58,29 @@ public class Card {
         }
     }
 
+    public void addLabel(Label label) {
+        if (labels.size() < 3) {
+            labels.add(label);
+        } else {
+            throw new IllegalStateException("A card can have a maximum of 3 labels");
+        }
+    }
+
     public void removeLabel(Label label) {
         if (labels.contains(label)) {
             this.labels.remove(label);
+        }
+    }
+
+    public Set<Label> getLabels() {
+        return new LinkedHashSet<>(labels);
+    }
+
+    public void setLabels(Set<Label> labels) {
+        if (labels.size() <= 3) {
+            this.labels = new LinkedHashSet<>(labels);
+        } else {
+            throw new IllegalArgumentException("A card can have a maximum of 3 labels");
         }
     }
 
