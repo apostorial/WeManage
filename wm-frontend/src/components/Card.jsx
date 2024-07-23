@@ -195,17 +195,29 @@ const Card = ({ card, onUpdate, onDelete }) => {
   return (
     <div className="card-column" onClick={handleClick}>
       <div className='card1'>
-        <div className='card2'>
-          <div className='card-name'>{card.name}</div>
-          <div className='card-date'>{timeAgo(card.createdAt)}</div>
-        </div>
-        <div className='card3'>
-          <div className='card4'>
-              <img src={addIcon} alt="Card Add Icon" className="add-icon-input" />
-          </div>
-        </div>
-        <div className='card-position'>{card.position}</div>
+      <div className='card2'>
+        <div className='card-name'>{card.name}</div>
+        <div className='card-date'>{timeAgo(card.createdAt)}</div>
       </div>
+      <div className='card3'>
+      <div className='labels-container'>
+        {card.labels && card.labels.map((label, index) => (
+          <span key={label.id || index} className='label' style={{ backgroundColor: label.color }}>
+            {label.name}
+          </span>
+        ))}
+      </div>
+      {card.labels && card.labels.length < 3 && (
+        <div className='card4'>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      )}
+    </div>
+      <div className='card-position'>{card.position}</div>
+    </div>
       {isPopupOpen && (
         <div className="popup">
           <div className="popup-content">

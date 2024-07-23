@@ -1,11 +1,34 @@
 .card-container {
   padding: 12px 12px 0px;
+  margin-bottom: 4px;
 }
 
 .card-column {
   cursor:pointer;
   width: 252px;
   height: 74px;
+  margin-bottom: 8px;
+}
+
+.labels-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.label {
+  display: inline-flex;
+  padding: 2px 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  color: #EBF7FB;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.5px;
 }
 
 .card1 {
@@ -47,7 +70,6 @@
   left: 8px;
   top: 50px;
   position: absolute;
-  background: #3E43FB;
   border-radius: 6px;
   justify-content: center;
   align-items: center;
@@ -56,9 +78,13 @@
 }
 
 .card4 {
-  width: 16px;
-  height: 16px;
-  position: relative;
+  display: inline-flex;
+  padding: 0px 2px;
+justify-content: center;
+align-items: center;
+gap: 8px;
+border-radius: 6px;
+background: #3E43FB;
 }
 
 .card-position {
