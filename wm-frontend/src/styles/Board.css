@@ -1,53 +1,74 @@
 
 
-  .board {
-    margin-left: 240px;
-    padding: 20px;
-    width: calc(100% - 240px);
-    position: relative;
-    height: calc(100vh - 64px);
-    overflow: hidden;
-    text-align: left;
-    font-size: 14px;
-    color: #fff;
-    font-family: 'Work Sans';
+.board {
+  margin-left: 240px;
+  padding: 20px;
+  width: calc(100% - 240px);
+  position: relative;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  text-align: left;
+  font-size: 14px;
+  color: #fff;
+  font-family: 'Work Sans';
 }
   
-  .columns-container {
-    display: flex;
-    overflow-x: auto;
-    height: calc(100% - 60px);
-    padding: 20px 0;
-  }
+.columns-container {
+  display: flex;
+  overflow-x: auto;
+  height: calc(100% - 60px);
+  padding: 20px 0;
+}
 
-  .board-header {
-    display: flex;
-    align-items: center;
-  }
+.board-name-input {
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.board-name {
+  cursor: pointer;
+}
   
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-  .add-column-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 3px;
+.board-title-section {
+  flex-grow: 1;
+}
 
-  }
+.board-name {
+  color: #FFF;
+leading-trim: both;
+text-edge: cap;
+font-family: "Work Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
 
-  .board-name-input {
-    margin-left: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .board-name {
-    cursor: pointer;
-  }
-  
+.board-actions {
+  display: flex;
+  gap: 10px;
+  margin-right:50px;
+}
+
+
+.options-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.options-button img {
+  width: 20px;
+  height: 20px;
+}
+

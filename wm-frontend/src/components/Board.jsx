@@ -3,12 +3,11 @@ import axios from '../axios-config.js';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Column from './Column';
 import '../styles/Board.css';
+import moreIcon from '../assets/more.svg';
 
 const Board = ({ board, onBoardNameUpdate }) => {
   const [columns, setColumns] = useState([]);
   const [error, setError] = useState(null);
-  const [newColumnName, setNewColumnName] = useState('');
-  const [isInputVisible, setIsInputVisible] = useState(false);
   const [isEditingBoardName, setIsEditingBoardName] = useState(false);
   const [boardName, setBoardName] = useState(board.name);
 
@@ -25,7 +24,15 @@ const Board = ({ board, onBoardNameUpdate }) => {
       const response = await axios.get(`http://localhost:8080/api/columns/board/${board.id}`);
       const columnsWithCards = await Promise.all(response.data.map(async (column) => {
         const cardsResponse = await axios.get(`http://localhost:8080/api/cards/column/${column.id}`);
-        return { ...column, cards: cardsResponse.data || [] };
+        const processedCards = await Promise.all((cardsResponse.data || []).map(async (card) => {
+          const labelPromises = card.labels.map(labelId => 
+            axios.get(`http://localhost:8080/api/labels/${labelId}`)
+          );
+          const labelResponses = await Promise.all(labelPromises);
+          const fullLabels = labelResponses.map(response => response.data);
+          return { ...card, labels: fullLabels };
+        }));
+        return { ...column, cards: processedCards };
       }));
       setColumns(columnsWithCards);
     } catch (error) {
@@ -35,24 +42,37 @@ const Board = ({ board, onBoardNameUpdate }) => {
   };
 
   const addColumn = async () => {
-    if (!newColumnName) return;
+    const defaultName = `Column ${columns.length + 1}`;
 
     try {
       const response = await axios.post('http://localhost:8080/api/columns/create', new URLSearchParams({
         boardId: board.id,
-        name: newColumnName,
+        name: defaultName,
       }));
 
       setColumns([...columns, { ...response.data, cards: [] }]);
-      setNewColumnName('');
-      setIsInputVisible(false);
     } catch (error) {
       console.error('Error creating column:', error);
       setError('Error creating column. Please try again.');
     }
   };
 
+  const handleBoardNameChange = (e) => {
+    setBoardName(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      updateBoardName();
+    }
+  };
+
+  const showBoardNameInput = () => {
+    setIsEditingBoardName(true);
+  };
+
   const updateBoardName = async () => {
+    if (boardName.trim() === '') return;
     try {
       await axios.put(`http://localhost:8080/api/boards/update/${board.id}`, new URLSearchParams({ name: boardName }));
       setIsEditingBoardName(false);
@@ -207,37 +227,38 @@ const Board = ({ board, onBoardNameUpdate }) => {
 
   return (
     <div className="board">
-      <h2>
-        {isEditingBoardName ? (
-          <input
-            type="text"
-            value={boardName}
-            onChange={(e) => setBoardName(e.target.value)}
-            onBlur={updateBoardName}
-            className="board-name-input"
-            autoFocus
-          />
-        ) : (
-          <span onClick={() => setIsEditingBoardName(true)} className="board-name">
+      <div className="board-header">
+      <div className="board-title-section">
+      {isEditingBoardName ? (
+            <div className="add-new-button" id="editBoardName">
+              <div className="add-new">
+                <a href="#" className="board-option add-new" onClick={updateBoardName}>
+                  <input
+                    type="text"
+                    value={boardName}
+                    onChange={handleBoardNameChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Enter board name"
+                    autoFocus
+                  />
+                </a>
+              </div>
+            </div>
+          ) : (
+            <span onClick={showBoardNameInput} className="board-name">
             {boardName}
           </span>
         )}
-        <button onClick={() => setIsInputVisible(true)} className="add-column-button">
-          +
-        </button>
-      </h2>
-      {isInputVisible && (
-        <div className="input-container">
-          <input
-            type="text"
-            value={newColumnName}
-            onChange={(e) => setNewColumnName(e.target.value)}
-            placeholder="Column name"
-            className="column-input"
-          />
-          <button onClick={addColumn}>Create</button>
-        </div>
-      )}
+         </div>
+         <div className="board-actions">
+         <button onClick={addColumn} className="add-new-button">
+            Add new +
+          </button>
+        <button className="options-button">
+            <img src={moreIcon} alt="More options" />
+          </button>
+          </div>
+          </div>
       <p>{board.description}</p>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="all-columns" direction="horizontal" type="column">
