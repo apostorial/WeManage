@@ -34,6 +34,12 @@ public class Label {
                 .collect(Collectors.toList());
     }
 
+    public void addCard(Card card) {
+        if (!cards.contains(card)) {
+            this.cards.add(card);
+        }
+    }
+
     public void removeCard(Card card) {
         if (cards.contains(card)) {
             this.cards.remove(card);
