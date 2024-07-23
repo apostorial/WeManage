@@ -79,6 +79,18 @@ public class CardRestController {
         }
     }
 
+    @PostMapping("/{id}/label/{labelId}")
+    public ResponseEntity<Card> addLabelToCard(@PathVariable String id, @PathVariable String labelId) {
+        try {
+            Card updatedCard = cardService.addLabelToCard(id, labelId);
+            return new ResponseEntity<>(updatedCard, HttpStatus.OK);
+        } catch (CardNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/{id}/label/{labelId}")
     public ResponseEntity<Card> removeLabelFromCard(@PathVariable String id, @PathVariable String labelId) {
         try {
