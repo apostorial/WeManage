@@ -1,7 +1,6 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.entities.Member;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;

@@ -1,7 +1,6 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.*;
 import ma.wemanity.wmbackend.exceptions.*;
 import ma.wemanity.wmbackend.repositories.CardRepository;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
