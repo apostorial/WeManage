@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor
-public class Member implements UserDetails {
+public class User implements UserDetails {
     @Id
     private String id;
     @NotNull @Indexed(unique = true)

@@ -1,19 +1,19 @@
 package ma.wemanity.wmbackend.web;
 
 import lombok.AllArgsConstructor;
-import ma.wemanity.wmbackend.entities.Member;
-import ma.wemanity.wmbackend.repositories.MemberRepository;
+import ma.wemanity.wmbackend.entities.User;
+import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/user")
-public class MemberRestController {
-    private final MemberRepository memberRepository;
+public class UserRestController {
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public Member register(@RequestBody Member user) {
+    public User register(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return memberRepository.save(user);
+        return userRepository.save(user);
     }
 }

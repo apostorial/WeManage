@@ -1,8 +1,8 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
-import ma.wemanity.wmbackend.entities.Member;
-import ma.wemanity.wmbackend.repositories.MemberRepository;
+import ma.wemanity.wmbackend.entities.User;
+import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,12 +13,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service @AllArgsConstructor
-public class MemberDetailsService implements UserDetailsService {
-    private final MemberRepository memberRepository;
+public class CustomUserDetailsService implements UserDetailsService {
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> user = memberRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             var member = user.get();
             return new org.springframework.security.core.userdetails.User(
