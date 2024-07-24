@@ -66,7 +66,10 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
           </div>
         </div>
         <div className='add-icon-parent'>
-          <img src={addIcon} alt="Add Icon" className="add-icon" />
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 8H12" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 12V4" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
           <img src={deleteIcon} alt="Delete Icon" className="delete-icon" onClick={handleDeleteColumn}/>
         </div>
       </div>
@@ -79,24 +82,39 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
             className={`card-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
             style={{ minHeight: '50px' }}
           >
-            {column.cards.map((card, index) => (
-              <Draggable key={card.id} draggableId={card.id} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <Card
-                      key={card.id}
-                      card={card}
-                      onUpdate={(updatedCard) => onUpdateCard(column.id, updatedCard)}
-                      onDelete={() => onDeleteCard(column.id, card.id)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {column.cards.length === 0 ? (
+              <div className="rectangle-parent">
+                <div className="group-child">
+                </div>
+                <div className="group-item">
+                </div>
+                <div className="group-inner">
+                </div>
+                <div className="rectangle-div">
+                </div>
+                <div className="group-child1">
+                </div>
+              </div>
+            ) : (
+              column.cards.map((card, index) => (
+                <Draggable key={card.id} draggableId={card.id} index={index}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <Card
+                        key={card.id}
+                        card={card}
+                        onUpdate={(updatedCard) => onUpdateCard(column.id, updatedCard)}
+                        onDelete={() => onDeleteCard(column.id, card.id)}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))
+            )}
             {provided.placeholder}
           </div>
         )}
@@ -106,7 +124,10 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
         {/* <img src={addIcon} alt="Add Icon" className="add-icon" /> */}
 				<div className="add-new">
           <a href="" className="board-option add-new" onClick={handleAddCard}>
-            <img src={addIcon} alt="Card Add Icon" className="add-icon-input" />
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 8H12" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 12V4" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <input
               type="text"
               value={newCardName}

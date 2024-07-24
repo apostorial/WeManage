@@ -119,3 +119,61 @@
 .card-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+
+
+
+
+
+.group-child {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 10px;
+  background-color: #141414;
+  width: 252px;
+  height: 60px;
+}
+.group-item {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  border-radius: 74px;
+  background-color: #1a1a1a;
+  width: 103px;
+  height: 16px;
+}
+.group-inner {
+  position: absolute;
+  top: 38px;
+  left: 8px;
+  border-radius: 74px;
+  background-color: #1a1a1a;
+  width: 82px;
+  height: 14px;
+}
+.rectangle-div {
+  position: absolute;
+  top: 38px;
+  left: 94px;
+  border-radius: 74px;
+  background-color: #1a1a1a;
+  width: 16px;
+  height: 14px;
+}
+.group-child1 {
+  position: absolute;
+  top: 8px;
+  left: 198px;
+  border-radius: 74px;
+  background-color: #1a1a1a;
+  width: 46px;
+  height: 14px;
+}
+.rectangle-parent {
+  width: 100%;
+  position: relative;
+  height: 60px;
+  margin:12px;
+}
