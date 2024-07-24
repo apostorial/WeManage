@@ -3,16 +3,15 @@ package ma.wemanity.wmbackend.services;
 import lombok.AllArgsConstructor;
 import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.entities.Column;
-import ma.wemanity.wmbackend.entities.Member;
+import ma.wemanity.wmbackend.entities.User;
 import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.ColumnRepository;
-import ma.wemanity.wmbackend.repositories.MemberRepository;
+import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ import java.util.Optional;
 @Service @AllArgsConstructor
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final ColumnRepository columnRepository;
 
     @Override
@@ -46,8 +45,8 @@ public class BoardServiceImpl implements BoardService {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object principal = authentication.getPrincipal();
-            User userDetails = (User) principal;
-            Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
+            org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) principal;
+            User authenticatedUser = userRepository.findByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
             Board board = new Board();
             board.setName(name);
@@ -112,9 +111,9 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<Board> getBoardsByAuthenticatedUser(Authentication authentication) {
         String username = authentication.getName();
-        Member member = memberRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        return boardRepository.findByOwnerId(member.getId());
+        return boardRepository.findByOwnerId(user.getId());
     }
 
     @Override

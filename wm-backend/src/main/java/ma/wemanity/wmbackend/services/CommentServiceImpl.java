@@ -5,10 +5,9 @@ import ma.wemanity.wmbackend.entities.*;
 import ma.wemanity.wmbackend.exceptions.*;
 import ma.wemanity.wmbackend.repositories.CardRepository;
 import ma.wemanity.wmbackend.repositories.CommentRepository;
-import ma.wemanity.wmbackend.repositories.MemberRepository;
+import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.util.Optional;
 @Service @AllArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final CardRepository cardRepository;
 
     @Override
@@ -41,8 +40,8 @@ public class CommentServiceImpl implements CommentService {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object principal = authentication.getPrincipal();
-            User userDetails = (User) principal;
-            Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
+            org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) principal;
+            User authenticatedUser = userRepository.findByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
 
             Optional<Card> optionalCard = cardRepository.findById(cardId);

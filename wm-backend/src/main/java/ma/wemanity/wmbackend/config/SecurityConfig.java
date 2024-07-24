@@ -1,7 +1,7 @@
 package ma.wemanity.wmbackend.config;
 
 import lombok.AllArgsConstructor;
-import ma.wemanity.wmbackend.services.MemberDetailsService;
+import ma.wemanity.wmbackend.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,33 +19,33 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration @AllArgsConstructor @EnableWebSecurity
 public class SecurityConfig {
-    private final MemberDetailsService memberDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final CustomAuthenticationSuccessHandler successHandler;
     private final CustomAuthenticationFailureHandler failureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(registry -> {
-                registry.requestMatchers("/api/user/**").permitAll();
-                registry.requestMatchers("/swagger-ui/index.html").hasRole("ADMIN");
-                registry.anyRequest().authenticated();
-            })
-            .formLogin(login -> login
-                    .loginProcessingUrl("/login")
-                    .successHandler(successHandler)
-                    .failureHandler(failureHandler)
-                    .permitAll())
-            .logout(LogoutConfigurer::permitAll)
-            .httpBasic(withDefaults())
-            .build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(registry -> {
+                    registry.requestMatchers("/api/user/**").permitAll();
+                    registry.requestMatchers("/swagger-ui/index.html").hasRole("ADMIN");
+                    registry.anyRequest().authenticated();
+                })
+                .formLogin(login -> login
+                        .loginProcessingUrl("/login")
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
+                        .permitAll())
+                .logout(LogoutConfigurer::permitAll)
+                .httpBasic(withDefaults())
+                .build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(memberDetailsService);
+        authenticationProvider.setUserDetailsService(customUserDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
 
         return new ProviderManager(authenticationProvider);

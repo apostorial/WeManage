@@ -22,9 +22,9 @@ public class Board {
     @DBRef
     private List<Column> columns = new ArrayList<>();
     @DBRef
-    private Member owner;
+    private User owner;
     @DBRef
-    private Set<Member> members = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     @JsonProperty("columns")
     public List<String> getColumnsForSerialization() {
@@ -40,8 +40,8 @@ public class Board {
 
     @JsonProperty("members")
     public List<String> getMembersForSerialization() {
-        return members.stream()
-                .map(Member::getId)
+        return users.stream()
+                .map(User::getId)
                 .collect(Collectors.toList());
     }
 
