@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Column from './Column';
 import '../styles/Board.css';
 import moreIcon from '../assets/more.svg';
+import addIcon from '../assets/add.svg';
 
 const Board = ({ board, onBoardNameUpdate }) => {
   const [columns, setColumns] = useState([]);
@@ -228,37 +229,30 @@ const Board = ({ board, onBoardNameUpdate }) => {
   return (
     <div className="board">
       <div className="board-header">
-      <div className="board-title-section">
-      {isEditingBoardName ? (
-            <div className="add-new-button" id="editBoardName">
-              <div className="add-new">
-                <a href="#" className="board-option add-new" onClick={updateBoardName}>
-                  <input
-                    type="text"
-                    value={boardName}
-                    onChange={handleBoardNameChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Enter board name"
-                    autoFocus
-                  />
-                </a>
-              </div>
-            </div>
-          ) : (
-            <span onClick={showBoardNameInput} className="board-name">
+        <div className="board-title-section">
+          <span className="board-name">
             {boardName}
           </span>
-        )}
-         </div>
-         <div className="board-actions">
-         <button onClick={addColumn} className="add-new-button">
-            Add new +
+        </div>
+        <div className="board-actions">
+          <button onClick={addColumn} className="add-new-parent">
+            <div class="add-new">Add new</div>
+            <img class="add-icon" alt="Add Icon" src={addIcon} />
           </button>
-        <button className="options-button">
-            <img src={moreIcon} alt="More options" />
-          </button>
+          <div className="options-button">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="vuesax/linear/more-square">
+              <g id="more-square">
+              <path id="Vector" d="M11.9993 29.3333H19.9993C26.666 29.3333 29.3327 26.6666 29.3327 20V12C29.3327 5.33329 26.666 2.66663 19.9993 2.66663H11.9993C5.33268 2.66663 2.66602 5.33329 2.66602 12V20C2.66602 26.6666 5.33268 29.3333 11.9993 29.3333Z" stroke="#EBF7FB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path id="Vector_2" d="M21.3293 16H21.3412" stroke="#EBF7FB" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              <path id="Vector_3" d="M15.9933 16H16.0053" stroke="#EBF7FB" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              <path id="Vector_4" d="M10.6593 16H10.6713" stroke="#EBF7FB" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+              </g>
+            </svg>
           </div>
-          </div>
+        </div>
+      </div>
       <p>{board.description}</p>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="all-columns" direction="horizontal" type="column">

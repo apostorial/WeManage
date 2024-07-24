@@ -1,5 +1,3 @@
-
-
 .board {
   margin-left: 240px;
   padding: 20px;
@@ -18,17 +16,6 @@
   overflow-x: auto;
   height: calc(100% - 60px);
   padding: 20px 0;
-}
-
-.board-name-input {
-  margin-left: 10px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.board-name {
-  cursor: pointer;
 }
   
 .board-header {
@@ -51,12 +38,14 @@ font-size: 24px;
 font-style: normal;
 font-weight: 500;
 line-height: normal;
+cursor: pointer;
 }
 
 .board-actions {
   display: flex;
   gap: 10px;
   margin-right:50px;
+  height:32px;
 }
 
 
@@ -64,11 +53,34 @@ line-height: normal;
   background-color: transparent;
   border: none;
   cursor: pointer;
-  padding: 8px;
 }
 
-.options-button img {
-  width: 20px;
-  height: 20px;
+.add-new {
+  position: relative;
+  letter-spacing: -0.04em;
+  font-weight: 500;
 }
-
+.add-icon {
+  width: 16px;
+  position: relative;
+  height: 16px;
+}
+.add-new-parent {
+  position: relative;
+  border-radius: 8px;
+  background-color: #3e43fb;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  gap: 2px;
+  text-align: left;
+  font-size: 14px;
+  color: #fff;
+  font-family: 'Work Sans';
+  border:none;
+  cursor:pointer;
+}
