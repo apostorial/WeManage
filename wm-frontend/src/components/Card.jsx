@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import '../styles/Card.css';
-import addIcon from '../assets/add.svg';
 
 const Card = ({ card, onUpdate, onDelete }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -193,85 +192,24 @@ const Card = ({ card, onUpdate, onDelete }) => {
 
 
   return (
-    <div className="card-column" onClick={handleClick}>
-      <div className='card1'>
-      <div className='card2'>
-        <div className='card-name'>{card.name}</div>
-        <div className='card-date'>{timeAgo(card.createdAt)}</div>
+    <div className="cardheader-parent">
+      <div className="cardheader">
+        <div className="card-name">{card.name}</div>
+        <div className="card-date">{timeAgo(card.createdAt)}</div>
       </div>
-      <div className='card3'>
-      <div className='labels-container'>
-        {card.labels && card.labels.map((label, index) => (
-          <span key={label.id || index} className='label' style={{ backgroundColor: label.color }}>
-            {label.name}
-          </span>
+      <div className="card-position">{card.position}</div>
+      <div className="labels-container">
+        {card.labels.map((label, index) => (
+          <div
+            key={label.id}
+            className="label"
+            style={{
+              backgroundColor: label.color,
+              left: `${8 + index * 42}px`
+            }}
+          />
         ))}
       </div>
-      {card.labels && card.labels.length < 3 && (
-        <div className='card4'>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-      )}
-    </div>
-      <div className='card-position'>{card.position}</div>
-    </div>
-      {isPopupOpen && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>Update Card</h2>
-            <form onSubmit={handleSubmit}>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" />
-              <input type="text" name="company" value={formData.company} onChange={handleChange} placeholder="Company" />
-              <input type="text" name="position" value={formData.position} onChange={handleChange} placeholder="Position" />
-              <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
-              <input type="text" name="number" value={formData.number} onChange={handleChange} placeholder="Number" />
-              <input type="text" name="website" value={formData.website} onChange={handleChange} placeholder="Website" />
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleClose}>Cancel</button>
-              <button type="button" onClick={handleDelete} className="delete-button">Delete</button>
-            </form>
-            <div className="comments-section">
-              <h3>Comments</h3>
-              <ul>
-                {comments.map((comment) => (
-                  <li key={comment.id}>
-                    {editingCommentId === comment.id ? (
-                      <>
-                        <input
-                          type="text"
-                          value={editingCommentContent}
-                          onChange={(e) => setEditingCommentContent(e.target.value)}
-                        />
-                        <button onClick={handleUpdateComment}>Save</button>
-                        <button onClick={() => setEditingCommentId(null)}>Cancel</button>
-                      </>
-                    ) : (
-                      <>
-                        <span>{comment.content}</span>
-                        <span> (Updated: {new Date(comment.updatedAt).toLocaleString()})</span>
-                        <button onClick={() => handleEditComment(comment)}>Edit</button>
-                        <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <form onSubmit={handleCommentSubmit}>
-                <input
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add a comment"
-                />
-                <button type="submit">Add Comment</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

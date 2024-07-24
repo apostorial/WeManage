@@ -1,170 +1,57 @@
-.card-container {
-  padding: 12px 12px 0px;
-  margin-bottom: 4px;
-}
-
-.card-column {
-  cursor:pointer;
-  width: 252px;
-  height: 74px;
-  margin-bottom: 8px;
-}
-
-.labels-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.label {
-  display: inline-flex;
-  padding: 2px 4px;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  border-radius: 6px;
-  color: #EBF7FB;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  letter-spacing: -0.5px;
-}
-
-.card1 {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background: #141414;
-  border-radius: 14px;
-  border: 0.60px solid rgba(235, 247, 251, 0.30);
-}
-
-.card2 {
-  width: 236px;
-  left: 8px;
-  top: 8px;
-  position: absolute;
-  justify-content: space-between;
-  align-items: center;
-  display: inline-flex;
-}
-
 .card-name {
-  color: #EBF7FB;
-  font-size: 14px;
+  position: relative;
+  letter-spacing: -0.05em;
   font-weight: 500;
-  word-wrap: break-word;
 }
-
 .card-date {
-  color: white;
+  position: relative;
   font-size: 12px;
-  font-weight: 400;
-  word-wrap: break-word;
+  letter-spacing: -0.05em;
+  color: #fff;
 }
-
-.card3 {
-  padding-left: 2px;
-  padding-right: 2px;
-  left: 8px;
-  top: 50px;
+.cardheader {
   position: absolute;
-  border-radius: 6px;
-  justify-content: center;
+  top: 8px;
+  left: 8px;
+  width: 236px;
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  display: inline-flex;
+  justify-content: space-between;
 }
-
-.card4 {
-  display: inline-flex;
-  padding: 0px 2px;
-justify-content: center;
-align-items: center;
-gap: 8px;
-border-radius: 6px;
-background: #3E43FB;
-}
-
 .card-position {
-  left: 8px;
-  top: 28px;
   position: absolute;
-  opacity: 0.50;
-  color: white;
+  top: 28px;
+  left: 8px;
   font-size: 12px;
-  font-weight: 400;
-  word-wrap: break-word;
+  letter-spacing: -0.05em;
+  color: #fff;
+  opacity: 0.5;
 }
-
-.popup {
-  position: fixed;
+.labels-container {
+  position: relative;
+  height: 4px;
+  margin-top: 62px;
+}
+.label {
+  position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  border-radius: 57px;
+  width: 38px;
+  height: 4px;
 }
+.cardheader-parent {
+  width: 252px;
+  position: relative;
+  border-radius: 14px;
+  background-color: #141414;
+  border: 0.6px solid rgba(235, 247, 251, 0.3);
+  box-sizing: border-box;
+  height: 74px;
+  text-align: left;
+  font-size: 14px;
+  color: #ebf7fb;
+  font-family: 'Work Sans';
 
-.popup-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 100%;
-}
-
-.popup-content h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-
-.popup-content form {
-  display: flex;
-  flex-direction: column;
-}
-
-.popup-content input {
-  margin-bottom: 10px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.popup-content button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.popup-content button[type="button"] {
-  background-color: #6c757d;
-  margin-left: 10px;
-}
-
-.popup-content button:hover {
-  opacity: 0.8;
-}
-
-.delete-button {
-  background-color: red !important;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.delete-button:hover {
-  background-color: darkred !important;
+  margin: 12px;
 }
