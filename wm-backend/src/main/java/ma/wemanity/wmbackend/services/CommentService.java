@@ -3,7 +3,6 @@ package ma.wemanity.wmbackend.services;
 import ma.wemanity.wmbackend.entities.Comment;
 import ma.wemanity.wmbackend.exceptions.CommentNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 

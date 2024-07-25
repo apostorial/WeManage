@@ -3,8 +3,6 @@ package ma.wemanity.wmbackend.services;
 import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
