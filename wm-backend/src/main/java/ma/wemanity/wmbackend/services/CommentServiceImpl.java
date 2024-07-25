@@ -8,7 +8,7 @@ import ma.wemanity.wmbackend.repositories.CommentRepository;
 import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
@@ -39,9 +39,9 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(String cardId, String content) throws ServiceException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Object principal = authentication.getPrincipal();
-            org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) principal;
-            User authenticatedUser = userRepository.findByUsername(userDetails.getUsername())
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
 
             Optional<Card> optionalCard = cardRepository.findById(cardId);
@@ -83,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(String id, UserDetails authenticatedUser) throws ServiceException {
+    public void deleteComment(String id) throws ServiceException {
         try {
             Optional<Comment> optionalComment = commentRepository.findById(id);
             if (optionalComment.isEmpty()) {
@@ -92,7 +92,13 @@ public class CommentServiceImpl implements CommentService {
             Comment comment = optionalComment.get();
             Card card = comment.getCard();
 
-            if (!authenticatedUser.getUsername().equals(comment.getAuthor().getUsername())) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
+            if (!authenticatedUser.getId().equals(comment.getAuthor().getId())) {
                 throw new AccessDeniedException("You are not authorized to delete this comment.");
             }
 

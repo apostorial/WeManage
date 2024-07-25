@@ -11,6 +11,6 @@ public interface CommentService {
     Comment getComment(String id) throws ServiceException;
     Comment createComment(String id, String content) throws ServiceException;
     Comment updateComment(String id, String content) throws CommentNotFoundException, ServiceException;
-    void deleteComment(String id, UserDetails userDetails) throws CommentNotFoundException, ServiceException;
+    void deleteComment(String id) throws CommentNotFoundException, ServiceException;
     List<Comment> getCommentsbyCardId(String id) throws ServiceException;
 }
