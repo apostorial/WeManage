@@ -13,6 +13,10 @@ import com.google.api.services.calendar.model.Events;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
+import lombok.AllArgsConstructor;
+import ma.wemanity.wmbackend.entities.Card;
+import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
+import ma.wemanity.wmbackend.repositories.CardRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
@@ -23,13 +27,15 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RestController @RequestMapping("/api/calendar")
+@RestController @AllArgsConstructor @RequestMapping("/api/calendar")
 public class CalendarRestController {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String APPLICATION_NAME = "WeManage";
+    private final CardRepository cardRepository;
 
     @GetMapping("/calendar")
     public List<String> getCalendarEventTitles(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient)
@@ -56,8 +62,9 @@ public class CalendarRestController {
     @PostMapping("/create-event")
     public ResponseEntity<String> createCalendarEvent(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient,
                                                       @RequestParam("name") String name,
-                                                      @RequestParam("start") String start)
-            throws GeneralSecurityException, IOException {
+                                                      @RequestParam("time") String time,
+                                                      @RequestParam("cardId") String cardId)
+            throws GeneralSecurityException, IOException, CardNotFoundException {
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
 
         GoogleCredentials credentials = GoogleCredentials.create(new AccessToken(accessToken, null))
@@ -73,8 +80,16 @@ public class CalendarRestController {
         Event event = new Event()
                 .setSummary(name)
                 .setLocation("")
-                .setStart(new EventDateTime().setDateTime(DateTime.parseRfc3339(start)))
-                .setEnd(new EventDateTime().setDateTime(DateTime.parseRfc3339(start)));
+                .setStart(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)))
+                .setEnd(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)));
+
+        Optional<Card> optionalCard = cardRepository.findById(cardId);
+        if (optionalCard.isEmpty()) {
+            throw new CardNotFoundException("Card not found with id: " + cardId);
+        }
+        Card card = optionalCard.get();
+        card.setMeeting(time);
+        cardRepository.save(card);
 
         Event createdEvent = service.events().insert("primary", event).execute();
 
