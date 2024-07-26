@@ -1,6 +1,9 @@
 package ma.wemanity.wmbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +29,7 @@ public class Card {
     private String website;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String meeting;
     @DBRef
     private Set<Comment> comments = new HashSet<>();
     @DBRef
