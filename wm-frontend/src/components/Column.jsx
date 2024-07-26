@@ -83,17 +83,23 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
             style={{ minHeight: '50px' }}
           >
             {column.cards.length === 0 ? (
-              <div className="rectangle-parent">
-                <div className="group-child">
-                </div>
-                <div className="group-item">
-                </div>
-                <div className="group-inner">
-                </div>
-                <div className="rectangle-div">
-                </div>
-                <div className="group-child1">
-                </div>
+              <div className="labels-empty-state-parent">
+              <div className="labels-empty-state">
+              <div className="label-1">
+              </div>
+              <div className="label-2">
+              </div>
+              <div className="label-3">
+              </div>
+              <div className="label-4">
+              </div>
+              </div>
+              <div className="position-empty-state">
+              </div>
+              <div className="name-empty-state">
+              </div>
+              <div className="date-empty-state">
+              </div>
               </div>
             ) : (
               column.cards.map((card, index) => (
