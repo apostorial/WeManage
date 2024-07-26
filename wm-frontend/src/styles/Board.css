@@ -1,6 +1,6 @@
 .board {
   margin-left: 240px;
-  padding: 20px;
+  padding: 16px 24px;
   width: calc(100% - 240px);
   position: relative;
   height: calc(100vh - 64px);
@@ -14,6 +14,7 @@
 .columns-container {
   display: flex;
   overflow-x: auto;
+  overflow-y: auto;
   height: calc(100% - 60px);
   padding: 20px 0;
 }
@@ -84,3 +85,32 @@ cursor: pointer;
   border:none;
   cursor:pointer;
 }
+
+.breadcrumb-main {
+  position: relative;
+  opacity: 0.6;
+}
+.breadcrumb-icon {
+  width: 16px;
+  position: relative;
+  height: 16px;
+  opacity: 0.6;
+}
+.breadcrumb-boards {
+  position: relative;
+}
+.breadcrumb {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  text-align: left;
+  font-size: 14px;
+  color: #ebf7fb;
+  font-family: 'Work Sans';
+  margin-bottom: 16px;
+}
+

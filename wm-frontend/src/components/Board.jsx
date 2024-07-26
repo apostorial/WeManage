@@ -3,7 +3,6 @@ import axios from '../axios-config.js';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Column from './Column';
 import '../styles/Board.css';
-import moreIcon from '../assets/more.svg';
 import addIcon from '../assets/add.svg';
 
 const Board = ({ board, onBoardNameUpdate }) => {
@@ -11,6 +10,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [error, setError] = useState(null);
   const [isEditingBoardName, setIsEditingBoardName] = useState(false);
   const [boardName, setBoardName] = useState(board.name);
+  const [color, setColor] = useState('#ffffff');
 
   useEffect(() => {
     setBoardName(board.name);
@@ -49,6 +49,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
       const response = await axios.post('/api/columns/create', new URLSearchParams({
         boardId: board.id,
         name: defaultName,
+        color: color,
       }));
 
       setColumns([...columns, { ...response.data, cards: [] }]);
@@ -228,6 +229,13 @@ const Board = ({ board, onBoardNameUpdate }) => {
 
   return (
     <div className="board">
+      <div className="breadcrumb">
+        <div className="breadcrumb-main">Main</div>
+        <svg className='breadcrumb-icon' viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.94043 13.2801L10.2871 8.93343C10.8004 8.42009 10.8004 7.58009 10.2871 7.06676L5.94043 2.72009" stroke="#EBF7FB" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <div className="breadcrumb-boards">Boards</div>
+      </div>
       <div className="board-header">
         <div className="board-title-section">
           <span className="board-name">

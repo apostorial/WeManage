@@ -3,7 +3,6 @@ import axios from '../axios-config.js';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import Card from './Card';
 import '../styles/Column.css';
-import addIcon from '../assets/add.svg'
 import deleteIcon from '../assets/delete.svg'
 import divider from '../assets/divider.svg'
 
@@ -59,9 +58,9 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
     <div className="to-do-list">
       <div className="todo-header">
         <div className='todo-label'>
-          <div className='label-color'></div>
+          <div className='label-color' style={{backgroundColor: column.color}}></div>
           <div className='to-do-text'>{columnName}</div>
-          <div className='cards-counter'>
+          <div className='cards-counter' style={{color: column.color}}>
             <div className='cards-number'>{column.cards.length}</div>
           </div>
         </div>

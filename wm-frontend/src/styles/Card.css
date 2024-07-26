@@ -10,10 +10,7 @@
   color: #fff;
 }
 .cardheader {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  width: 236px;
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -41,7 +38,7 @@
   height: 4px;
 }
 .cardheader-parent {
-  width: 252px;
+  width: 250px;
   position: relative;
   border-radius: 14px;
   background-color: #141414;
@@ -53,4 +50,5 @@
   color: #ebf7fb;
   font-family: 'Work Sans';
   margin: 8px 12px;
+  padding: 8px;
 }
