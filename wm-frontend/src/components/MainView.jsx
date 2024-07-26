@@ -13,7 +13,7 @@ const MainView = () => {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/boards/list');
+        const response = await axios.get('/api/boards/list');
         const fetchedBoards = response.data || [];
         setBoards(fetchedBoards);
 
@@ -39,7 +39,7 @@ const MainView = () => {
     formData.append('description', '');
 
     try {
-      const response = await axios.post('http://localhost:8080/api/boards/create', formData, {
+      const response = await axios.post('/api/boards/create', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -56,7 +56,7 @@ const MainView = () => {
 
   const handleDeleteBoard = async (boardId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/boards/delete/${boardId}`);
+      await axios.delete(`/api/boards/delete/${boardId}`);
       setBoards(prevBoards => {
         const updatedBoards = prevBoards.filter(board => board.id !== boardId);
         if (selectedBoard && selectedBoard.id === boardId) {

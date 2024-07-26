@@ -18,7 +18,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
     if (!newCardName.trim()) return;
 
     try {
-      const response = await axios.post('http://localhost:8080/api/cards/create', new URLSearchParams({
+      const response = await axios.post('/api/cards/create', new URLSearchParams({
         name: newCardName,
         columnId: column.id,
       }));
@@ -32,7 +32,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
 
   const updateColumnName = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/columns/update/${column.id}`, new URLSearchParams({ name: columnName }));
+      await axios.put(`/api/columns/update/${column.id}`, new URLSearchParams({ name: columnName }));
       setIsEditingColumnName(false);
       onColumnNameUpdate(column.id, columnName);
     } catch (error) {
@@ -42,7 +42,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
 
   const handleDeleteColumn = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/columns/delete/${column.id}`);
+      await axios.delete(`/api/columns/delete/${column.id}`);
       onDeleteColumn(column.id);
     } catch (error) {
       console.error('Error deleting column:', error);
@@ -67,8 +67,8 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
         </div>
         <div className='add-icon-parent'>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 8H12" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 12V4" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
           <img src={deleteIcon} alt="Delete Icon" className="delete-icon" onClick={handleDeleteColumn}/>
         </div>
@@ -125,8 +125,8 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
 				<div className="add-new">
           <a href="" className="board-option add-new" onClick={handleAddCard}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 8H12" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8 12V4" stroke="#EBF7FB" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             <input
               type="text"

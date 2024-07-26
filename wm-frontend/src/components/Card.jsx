@@ -25,7 +25,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/comments/card/${card.id}`);
+      const response = await axios.get(`/api/comments/card/${card.id}`);
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -85,7 +85,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
         labelIds: '',
       });
 
-      const response = await axios.put(`http://localhost:8080/api/cards/update/${card.id}`,
+      const response = await axios.put(`/api/cards/update/${card.id}`,
         payload, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -106,7 +106,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/cards/delete/${card.id}`);
+      const response = await axios.delete(`/api/cards/delete/${card.id}`);
       if (response.status === 204) {
         onDelete(card.id);
         setIsPopupOpen(false);
@@ -126,7 +126,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
         cardId: card.id
       });
   
-      const response = await axios.post('http://localhost:8080/api/comments/create', 
+      const response = await axios.post('/api/comments/create', 
         payload,
         {
           headers: {
@@ -156,7 +156,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
         id: editingCommentId
       });
 
-      const response = await axios.put(`http://localhost:8080/api/comments/update/${editingCommentId}`, 
+      const response = await axios.put(`/api/comments/update/${editingCommentId}`, 
         payload,
         {
           headers: {
@@ -180,7 +180,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/comments/delete/${commentId}`);
+      const response = await axios.delete(`/api/comments/delete/${commentId}`);
       if (response.status === 204) {
         const updatedComments = comments.filter(c => c.id !== commentId);
         setComments(updatedComments);

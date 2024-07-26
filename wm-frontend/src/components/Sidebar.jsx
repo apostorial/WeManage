@@ -14,7 +14,6 @@ import tasksIcon from '../assets/tasks.svg'
 import inboxIcon from '../assets/inbox.svg'
 import documentationIcon from '../assets/documentation.svg'
 import settingsIcon from '../assets/settings.svg'
-import logoutIcon from '../assets/logout.svg'
 
 const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
   const [newBoardName, setNewBoardName] = useState('');
@@ -35,7 +34,7 @@ const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/logout', {
+      const response = await fetch('/logout', {
         method: 'GET',
         credentials: 'include',
       });
