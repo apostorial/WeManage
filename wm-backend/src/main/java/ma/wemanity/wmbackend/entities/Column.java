@@ -22,6 +22,7 @@ public class Column {
     private String description;
     @DBRef
     private Board board;
+    private String color;
     @DBRef
     private List<Card> cards = new ArrayList<>();
 
