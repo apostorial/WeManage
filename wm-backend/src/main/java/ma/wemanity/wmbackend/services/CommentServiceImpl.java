@@ -1,16 +1,14 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.*;
 import ma.wemanity.wmbackend.exceptions.*;
 import ma.wemanity.wmbackend.repositories.CardRepository;
 import ma.wemanity.wmbackend.repositories.CommentRepository;
-import ma.wemanity.wmbackend.repositories.MemberRepository;
+import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
@@ -18,10 +16,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final CardRepository cardRepository;
 
     @Override
@@ -41,9 +39,9 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(String cardId, String content) throws ServiceException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Object principal = authentication.getPrincipal();
-            User userDetails = (User) principal;
-            Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
 
             Optional<Card> optionalCard = cardRepository.findById(cardId);
@@ -85,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(String id, UserDetails authenticatedUser) throws ServiceException {
+    public void deleteComment(String id) throws ServiceException {
         try {
             Optional<Comment> optionalComment = commentRepository.findById(id);
             if (optionalComment.isEmpty()) {
@@ -94,7 +92,13 @@ public class CommentServiceImpl implements CommentService {
             Comment comment = optionalComment.get();
             Card card = comment.getCard();
 
-            if (!authenticatedUser.getUsername().equals(comment.getAuthor().getUsername())) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
+            if (!authenticatedUser.getId().equals(comment.getAuthor().getId())) {
                 throw new AccessDeniedException("You are not authorized to delete this comment.");
             }
 

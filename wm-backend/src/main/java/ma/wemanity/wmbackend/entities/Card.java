@@ -1,6 +1,9 @@
 package ma.wemanity.wmbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,10 +12,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor
@@ -26,12 +27,15 @@ public class Card {
     private String email;
     private String number;
     private String website;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String meeting;
     @DBRef
     private Set<Comment> comments = new HashSet<>();
     @DBRef
     private Column column;
     @DBRef
-    private Set<Label> labels = new HashSet<>();
+    private Set<Label> labels = new LinkedHashSet<>();
 
     @JsonProperty("comments")
     public List<String> getCommentsForSerialization() {
@@ -58,9 +62,29 @@ public class Card {
         }
     }
 
+    public void addLabel(Label label) {
+        if (labels.size() < 3) {
+            labels.add(label);
+        } else {
+            throw new IllegalStateException("A card can have a maximum of 3 labels");
+        }
+    }
+
     public void removeLabel(Label label) {
         if (labels.contains(label)) {
             this.labels.remove(label);
+        }
+    }
+
+    public Set<Label> getLabels() {
+        return new LinkedHashSet<>(labels);
+    }
+
+    public void setLabels(Set<Label> labels) {
+        if (labels.size() <= 3) {
+            this.labels = new LinkedHashSet<>(labels);
+        } else {
+            throw new IllegalArgumentException("A card can have a maximum of 3 labels");
         }
     }
 

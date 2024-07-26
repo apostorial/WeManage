@@ -4,18 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.entities.Column;
-import ma.wemanity.wmbackend.entities.Member;
+import ma.wemanity.wmbackend.entities.User;
 import ma.wemanity.wmbackend.exceptions.BoardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.ColumnRepository;
-import ma.wemanity.wmbackend.repositories.MemberRepository;
+import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
@@ -26,7 +25,7 @@ import java.util.Optional;
 @Service @AllArgsConstructor @Slf4j
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final ColumnRepository columnRepository;
 
     @Override
@@ -46,22 +45,37 @@ public class BoardServiceImpl implements BoardService {
     public Board createBoard(String name, String description) throws ServiceException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Object principal = authentication.getPrincipal();
-            User userDetails = (User) principal;
-            Member authenticatedUser = memberRepository.findByUsername(userDetails.getUsername())
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ServiceException("Authenticated user not found"));
             Board board = new Board();
             board.setName(name);
             board.setDescription(description);
             board.setOwner(authenticatedUser);
-            return boardRepository.save(board);
+            Board savedBoard = boardRepository.save(board);
+
+            String[] columnNames = {"To Do", "In Progress", "In Review", "Completed"};
+            for (String columnName : columnNames) {
+                Column column = new Column();
+                column.setName(columnName);
+                column.setBoard(savedBoard);
+                columnRepository.save(column);
+                savedBoard.addColumn(column);
+                boardRepository.save(savedBoard);
+            }
+
+            authenticatedUser.getOwnerOf().add(board);
+            userRepository.save(authenticatedUser);
+
+            return savedBoard;
         } catch (Exception e) {
             throw new ServiceException("Failed to create board", e);
         }
     }
 
     @Override
-    public Board updateBoard(String id, String name, String description, UserDetails authenticatedUser) throws ServiceException {
+    public Board updateBoard(String id, String name, String description) throws ServiceException {
         try {
             Optional<Board> optionalBoard = boardRepository.findById(id);
             if (optionalBoard.isEmpty()) {
@@ -69,7 +83,13 @@ public class BoardServiceImpl implements BoardService {
             }
             Board board = optionalBoard.get();
 
-            if (!authenticatedUser.getUsername().equals(board.getOwner().getUsername())) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
+            if (!authenticatedUser.getId().equals(board.getOwner().getId())) {
                 throw new AccessDeniedException("You are not authorized to update this board.");
             }
 
@@ -82,7 +102,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public void deleteBoard(String id, UserDetails authenticatedUser) throws ServiceException{
+    public void deleteBoard(String id) throws ServiceException{
         try {
             Optional<Board> optionalBoard = boardRepository.findById(id);
             if (optionalBoard.isEmpty()) {
@@ -90,7 +110,13 @@ public class BoardServiceImpl implements BoardService {
             }
             Board board = optionalBoard.get();
 
-            if (!authenticatedUser.getUsername().equals(board.getOwner().getUsername())) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
+            if (!authenticatedUser.getId().equals(board.getOwner().getId())) {
                 throw new AccessDeniedException("You are not authorized to delete this board.");
             }
             boardRepository.deleteById(id);
@@ -100,11 +126,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<Board> getBoardsByAuthenticatedUser(Authentication authentication) {
-        String username = authentication.getName();
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        return boardRepository.findByOwnerId(member.getId());
+    public List<Board> getBoardsByAuthenticatedUser() throws ServiceException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+        String email = principal.getAttribute("email");
+        User authenticatedUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
+        User user = userRepository.findById(authenticatedUser.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + authenticatedUser.getId()));
+        return boardRepository.findByOwnerId(user.getId());
     }
 
     @Override

@@ -7,8 +7,6 @@ import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,11 +50,9 @@ public class CommentRestController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable("id") String id,
-                                                 Authentication authentication) {
+    public ResponseEntity<Comment> deleteComment(@PathVariable("id") String id) {
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            commentService.deleteComment(id, userDetails);
+            commentService.deleteComment(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (CommentNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

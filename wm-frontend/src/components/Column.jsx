@@ -3,6 +3,9 @@ import axios from '../axios-config.js';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import Card from './Card';
 import '../styles/Column.css';
+import addIcon from '../assets/add.svg'
+import deleteIcon from '../assets/delete.svg'
+import divider from '../assets/divider.svg'
 
 const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdateCard, onDeleteCard }) => {
   const [isAddingCard, setIsAddingCard] = useState(false);
@@ -15,7 +18,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
     if (!newCardName.trim()) return;
 
     try {
-      const response = await axios.post('http://localhost:8080/api/cards/create', new URLSearchParams({
+      const response = await axios.post('/api/cards/create', new URLSearchParams({
         name: newCardName,
         columnId: column.id,
       }));
@@ -29,7 +32,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
 
   const updateColumnName = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/columns/update/${column.id}`, new URLSearchParams({ name: columnName }));
+      await axios.put(`/api/columns/update/${column.id}`, new URLSearchParams({ name: columnName }));
       setIsEditingColumnName(false);
       onColumnNameUpdate(column.id, columnName);
     } catch (error) {
@@ -39,73 +42,108 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
 
   const handleDeleteColumn = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/columns/delete/${column.id}`);
+      await axios.delete(`/api/columns/delete/${column.id}`);
       onDeleteColumn(column.id);
     } catch (error) {
       console.error('Error deleting column:', error);
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleAddCard(e);
+    }
+  };
+
   return (
-    <div className="column">
-      <div className="column-header">
-        {isEditingColumnName ? (
-          <input
-            type="text"
-            value={columnName}
-            onChange={(e) => setColumnName(e.target.value)}
-            onBlur={updateColumnName}
-            className="column-name-input"
-            autoFocus
-          />
-        ) : (
-          <h3 onClick={() => setIsEditingColumnName(true)}>{columnName}</h3>
-        )}
-        <button onClick={() => setIsAddingCard(true)} className="add-card-btn">+</button>
-        <button onClick={handleDeleteColumn} className="delete-column-btn">Delete</button>
+    <div className="to-do-list">
+      <div className="todo-header">
+        <div className='todo-label'>
+          <div className='label-color'></div>
+          <div className='to-do-text'>{columnName}</div>
+          <div className='cards-counter'>
+            <div className='cards-number'>{column.cards.length}</div>
+          </div>
+        </div>
+        <div className='add-icon-parent'>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+          <img src={deleteIcon} alt="Delete Icon" className="delete-icon" onClick={handleDeleteColumn}/>
+        </div>
       </div>
+      <img src={divider} alt="Divider" className="header-divider" />
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className={`cards-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
+            className={`card-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
             style={{ minHeight: '50px' }}
           >
-            {column.cards.map((card, index) => (
-              <Draggable key={card.id} draggableId={card.id} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <Card
-                      key={card.id}
-                      card={card}
-                      onUpdate={(updatedCard) => onUpdateCard(column.id, updatedCard)}
-                      onDelete={() => onDeleteCard(column.id, card.id)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {column.cards.length === 0 ? (
+              <div className="labels-empty-state-parent">
+              <div className="labels-empty-state">
+              <div className="label-1">
+              </div>
+              <div className="label-2">
+              </div>
+              <div className="label-3">
+              </div>
+              <div className="label-4">
+              </div>
+              </div>
+              <div className="position-empty-state">
+              </div>
+              <div className="name-empty-state">
+              </div>
+              <div className="date-empty-state">
+              </div>
+              </div>
+            ) : (
+              column.cards.map((card, index) => (
+                <Draggable key={card.id} draggableId={card.id} index={index}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <Card
+                        key={card.id}
+                        card={card}
+                        onUpdate={(updatedCard) => onUpdateCard(column.id, updatedCard)}
+                        onDelete={() => onDeleteCard(column.id, card.id)}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))
+            )}
             {provided.placeholder}
           </div>
         )}
       </Droppable>
-      {isAddingCard && (
-        <form onSubmit={handleAddCard} className="add-card-form">
-          <input
-            type="text"
-            value={newCardName}
-            onChange={(e) => setNewCardName(e.target.value)}
-            placeholder="Enter card name"
-          />
-          <button type="submit">Add</button>
-          <button type="button" onClick={() => setIsAddingCard(false)}>Cancel</button>
-        </form>
-      )}
+      <img src={divider} alt="Divider" className="footer-divider" />
+      <div className="add-new-button" id="addNewButton">
+        {/* <img src={addIcon} alt="Add Icon" className="add-icon" /> */}
+				<div className="add-new">
+          <a href="" className="board-option add-new" onClick={handleAddCard}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <input
+              type="text"
+              value={newCardName}
+              onChange={(e) => setNewCardName(e.target.value)}
+              placeholder="Add a new card"
+              onKeyDown={handleKeyDown}
+            />
+          </a>
+        </div>
+			</div>
     </div>
   );
 };

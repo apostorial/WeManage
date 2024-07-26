@@ -23,7 +23,7 @@ public class Comment {
     @DBRef
     private Card card;
     @DBRef
-    private Member author;
+    private User author;
 
     @JsonProperty("card")
     public String getCardForSerialization() {

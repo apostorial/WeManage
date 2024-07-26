@@ -1,7 +1,6 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.entities.Column;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class ColumnServiceImpl implements ColumnService {
     private final ColumnRepository columnRepository;
     private final BoardRepository boardRepository;

@@ -7,8 +7,6 @@ import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.services.BoardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,11 +39,9 @@ public class BoardRestController {
     @PutMapping("/update/{id}")
     public ResponseEntity<Board> updateBoard(@PathVariable("id") String id,
                                              @RequestParam(name = "name") String name,
-                                             @RequestParam(name = "description", required = false) String description,
-                                             Authentication authentication) {
+                                             @RequestParam(name = "description", required = false) String description) {
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Board board = boardService.updateBoard(id, name, description, userDetails);
+            Board board = boardService.updateBoard(id, name, description);
             return new ResponseEntity<>(board, HttpStatus.OK);
         } catch (BoardNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,11 +51,9 @@ public class BoardRestController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable("id") String id,
-                                            Authentication authentication) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable("id") String id) {
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            boardService.deleteBoard(id, userDetails);
+            boardService.deleteBoard(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BoardNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -69,9 +63,9 @@ public class BoardRestController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Board>> listBoards(Authentication authentication) {
+    public ResponseEntity<List<Board>> listBoards() {
         try {
-            List<Board> boards = boardService.getBoardsByAuthenticatedUser(authentication);
+            List<Board> boards = boardService.getBoardsByAuthenticatedUser();
             return new ResponseEntity<>(boards, HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

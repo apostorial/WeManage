@@ -2,3 +2,16 @@ body {
   margin: 0;
   line-height: normal;
 }
+
+
+.main {
+  width: 100%;
+  position: fixed;
+  background-color: #141414;
+  height: 1024px;
+  overflow: hidden;
+  text-align: left;
+  font-size: 14px;
+  color: #efefef;
+  font-family: 'Work Sans';
+}

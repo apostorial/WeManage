@@ -14,6 +14,7 @@ public interface CardService {
     Card updateCard(String id, String name, String company, String position, String email, String number, String website, Set<String> labelIds) throws CardNotFoundException, ServiceException;
     void deleteCard(String id) throws CardNotFoundException, ServiceException;
     List<Card> getCardsByColumnId(String id) throws ServiceException;
+    Card addLabelToCard(String id, String labelId) throws CardNotFoundException, ServiceException;
     Card removeLabelFromCard(String id, String labelId) throws CardNotFoundException, ServiceException;
     Card moveCard(String id, String columnId) throws CardNotFoundException, ColumnNotFoundException, ServiceException;
 }
