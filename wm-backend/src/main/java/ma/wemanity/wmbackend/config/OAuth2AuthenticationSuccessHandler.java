@@ -9,14 +9,14 @@ import ma.wemanity.wmbackend.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @Component @AllArgsConstructor
-public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final UserRepository userRepository;
 
     @Override
@@ -34,6 +34,12 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             userRepository.save(newUser);
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
+        String targetUrl = determineTargetUrl(request, response, authentication);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    }
+
+    @Override
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        return "http://localhost:5173/main";
     }
 }
