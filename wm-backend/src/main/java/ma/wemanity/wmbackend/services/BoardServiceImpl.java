@@ -56,10 +56,13 @@ public class BoardServiceImpl implements BoardService {
             Board savedBoard = boardRepository.save(board);
 
             String[] columnNames = {"To Do", "In Progress", "In Review", "Completed"};
-            for (String columnName : columnNames) {
+            String[] columnColors = {"#E74C3C", "#F1C40F", "#07BC0C", "#3498DB"};
+
+            for (int i = 0; i < columnNames.length; i++) {
                 Column column = new Column();
-                column.setName(columnName);
+                column.setName(columnNames[i]);
                 column.setBoard(savedBoard);
+                column.setColor(columnColors[i]);
                 columnRepository.save(column);
                 savedBoard.addColumn(column);
                 boardRepository.save(savedBoard);
