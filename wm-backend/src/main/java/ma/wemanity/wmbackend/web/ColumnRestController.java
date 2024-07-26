@@ -27,9 +27,10 @@ public class ColumnRestController {
 
     @PostMapping("/create")
     public ResponseEntity<Column> createColumn(@RequestParam("boardId") String boardId,
-                                               @RequestParam("name") String name) {
+                                               @RequestParam("name") String name,
+                                               @RequestParam("color") String color) {
         try {
-            Column column = columnService.createColumn(boardId, name);
+            Column column = columnService.createColumn(boardId, name, color);
             return new ResponseEntity<>(column, HttpStatus.CREATED);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -39,9 +40,10 @@ public class ColumnRestController {
     @PutMapping("/update/{id}")
     public ResponseEntity<Column> updateColumn(@PathVariable("id") String id,
                                                @RequestParam(name = "name") String name,
-                                               @RequestParam(name = "description", required = false) String description) {
+                                               @RequestParam(name = "description", required = false) String description,
+                                               @RequestParam(name = "color", required = false) String color) {
         try {
-            Column column = columnService.updateColumn(id, name, description);
+            Column column = columnService.updateColumn(id, name, description, color);
             return new ResponseEntity<>(column, HttpStatus.OK);
         } catch (ColumnNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -37,7 +37,7 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public Column createColumn(String boardId, String name) throws ServiceException {
+    public Column createColumn(String boardId, String name, String color) throws ServiceException {
         try {
             Optional<Board> optionalBoard = boardRepository.findById(boardId);
             if (optionalBoard.isEmpty()) {
@@ -47,6 +47,7 @@ public class ColumnServiceImpl implements ColumnService {
             Column column = new Column();
             column.setBoard(board);
             column.setName(name);
+            column.setColor(color);
             Column savedColumn = columnRepository.save(column);
             if (!board.getColumns().contains(savedColumn)) {
                 board.addColumn(savedColumn);
@@ -59,7 +60,7 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public Column updateColumn(String id, String name, String description) throws ServiceException {
+    public Column updateColumn(String id, String name, String description, String color) throws ServiceException {
         try {
             Optional<Column> optionalColumn = columnRepository.findById(id);
             if (optionalColumn.isEmpty()) {
@@ -69,6 +70,7 @@ public class ColumnServiceImpl implements ColumnService {
 
             column.setName(name);
             column.setDescription(description);
+            column.setColor(color);
             return columnRepository.save(column);
         } catch (Exception e) {
             throw new ServiceException("Failed to update column", e);
