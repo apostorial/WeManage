@@ -39,7 +39,7 @@ const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
         credentials: 'include',
       });
       if (response.ok) {
-        navigate('/login');
+        navigate('/');
       } else {
         console.error('Logout failed');
       }
