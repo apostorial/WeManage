@@ -5,6 +5,7 @@ import Card from './Card';
 import '../styles/Column.css';
 import deleteIcon from '../assets/delete.svg'
 import divider from '../assets/divider.svg'
+import EmptyState from '../assets/empty_state.svg?react';
 
 const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdateCard, onDeleteCard }) => {
   const [isAddingCard, setIsAddingCard] = useState(false);
@@ -82,24 +83,9 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
             style={{ minHeight: '50px' }}
           >
             {column.cards.length === 0 ? (
-              <div className="labels-empty-state-parent">
-              <div className="labels-empty-state">
-              <div className="label-1">
-              </div>
-              <div className="label-2">
-              </div>
-              <div className="label-3">
-              </div>
-              <div className="label-4">
-              </div>
-              </div>
-              <div className="position-empty-state">
-              </div>
-              <div className="name-empty-state">
-              </div>
-              <div className="date-empty-state">
-              </div>
-              </div>
+              <div className="empty-state-container">
+              <EmptyState />
+            </div>
             ) : (
               column.cards.map((card, index) => (
                 <Draggable key={card.id} draggableId={card.id} index={index}>
