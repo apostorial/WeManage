@@ -13,10 +13,13 @@
   
 .columns-container {
   display: flex;
+  flex-direction: row;
   overflow-x: auto;
   overflow-y: auto;
-  height: calc(100% - 60px);
   padding: 20px 0;
+  padding-bottom: 16px;
+  align-items: flex-start;
+  white-space: nowrap;
 }
   
 .board-header {

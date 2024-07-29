@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Column from './Column';
+import ColumnAddPopup from './ColumnAddPopup';
 import '../styles/Board.css';
 import addIcon from '../assets/add.svg';
 
@@ -11,6 +12,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [isEditingBoardName, setIsEditingBoardName] = useState(false);
   const [boardName, setBoardName] = useState(board.name);
   const [color, setColor] = useState('#ffffff');
+  const [isAddColumnPopupOpen, setIsAddColumnPopupOpen] = useState(false);
 
   useEffect(() => {
     setBoardName(board.name);
@@ -42,21 +44,16 @@ const Board = ({ board, onBoardNameUpdate }) => {
     }
   };
 
-  const addColumn = async () => {
-    const defaultName = `Column ${columns.length + 1}`;
+  const addColumn = () => {
+    setIsAddColumnPopupOpen(true);
+  };
 
-    try {
-      const response = await axios.post('/api/columns/create', new URLSearchParams({
-        boardId: board.id,
-        name: defaultName,
-        color: color,
-      }));
+  const handleAddColumn = (newColumn) => {
+    setColumns(prevColumns => [...prevColumns, { ...newColumn, cards: [] }]);
+  };
 
-      setColumns([...columns, { ...response.data, cards: [] }]);
-    } catch (error) {
-      console.error('Error creating column:', error);
-      setError('Error creating column. Please try again.');
-    }
+  const closeAddColumnPopup = () => {
+  setIsAddColumnPopupOpen(false);
   };
 
   const handleBoardNameChange = (e) => {
@@ -288,6 +285,13 @@ const Board = ({ board, onBoardNameUpdate }) => {
           )}
         </Droppable>
       </DragDropContext>
+      {isAddColumnPopupOpen && (
+        <ColumnAddPopup
+          onClose={closeAddColumnPopup}
+          onAddColumn={handleAddColumn}
+          boardId={board.id}
+        />
+      )}
     </div>
   );
 };
