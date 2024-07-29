@@ -16,7 +16,6 @@
     const fetchEvents = async () => {
       try {
         const response = await axios.get('/api/calendar/events');
-        console.log('API response:', response.data);
         const formattedEvents = response.data.map(event => ({
           id: event.id,
           title: event.title,
@@ -24,7 +23,6 @@
           end: event.end,
           allDay: event.allDay
         }));
-        console.log('Formatted events:', formattedEvents);
         setEvents(formattedEvents);
       } catch (error) {
         console.error('Error fetching events:', error);
