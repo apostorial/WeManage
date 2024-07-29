@@ -15,10 +15,15 @@ import inboxIcon from '../assets/inbox.svg'
 import documentationIcon from '../assets/documentation.svg'
 import settingsIcon from '../assets/settings.svg'
 
-const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
+const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard, onViewChange, currentView }) => {
   const [newBoardName, setNewBoardName] = useState('');
   const [isBoardsExpanded, setIsBoardsExpanded] = useState(false);
   const navigate = useNavigate();
+
+  const handleBoardClick = (board) => {
+    onBoardSelect(board);
+    onViewChange('board');
+  };
 
   const handleAddBoard = (e) => {
     e.preventDefault();
@@ -75,7 +80,7 @@ const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
                 boards.map((board) => (
                   <a key={board.id} href="" className="board-option" onClick={(e) => {
                     e.preventDefault();
-                    onBoardSelect(board);
+                    handleBoardClick(board);
                     }}>
                     <img src={boardItemIcon} alt="Board Item Icon" className="sidebar-icon" />
                     <span>{board.name}</span>
@@ -94,7 +99,10 @@ const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard }) => {
               </a>
             </div>
             </div>
-            <a href="" className="sidebar-item">
+            <a href="" className={`sidebar-item ${currentView === 'calendar' ? 'active' : ''}`} onClick={(e) => {
+              e.preventDefault();
+              onViewChange('calendar');
+            }}>
               <img src={calendarIcon} alt="Calendar Icon" className="sidebar-icon" />
               <span>Calendar</span>
             </a>
