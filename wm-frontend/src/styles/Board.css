@@ -45,7 +45,6 @@ cursor: pointer;
 .board-actions {
   display: flex;
   gap: 10px;
-  margin-right:50px;
   height:32px;
 }
 
@@ -113,4 +112,3 @@ cursor: pointer;
   font-family: 'Work Sans';
   margin-bottom: 16px;
 }
-
