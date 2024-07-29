@@ -1,6 +1,5 @@
 package ma.wemanity.wmbackend.config;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -18,15 +17,23 @@ import java.util.Optional;
 @Component @AllArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final UserRepository userRepository;
+    private static final String ALLOWED_DOMAIN = "wemanity.com";
+    private static final String LOGIN_PAGE_URL = "http://localhost:5173/";
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
-        OAuth2User user = token.getPrincipal();
+        OAuth2User oAuth2User = token.getPrincipal();
 
-        String googleId = user.getAttribute("sub");
-        String email = user.getAttribute("email");
-        String name = user.getAttribute("name");
+        String googleId = oAuth2User.getAttribute("sub");
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+
+        if (email == null || !email.endsWith("@" + ALLOWED_DOMAIN)) {
+            getRedirectStrategy().sendRedirect(request, response, LOGIN_PAGE_URL);
+//            + "?error=invalid_domain"
+            return;
+        }
 
         Optional<User> existingUser = userRepository.findByGoogleId(googleId);
         if (existingUser.isEmpty()) {
