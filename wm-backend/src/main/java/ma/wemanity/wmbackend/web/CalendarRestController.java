@@ -25,9 +25,7 @@ import com.google.api.services.calendar.model.Event;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/calendar")
@@ -37,8 +35,8 @@ public class CalendarRestController {
     private static final String APPLICATION_NAME = "WeManage";
     private final CardRepository cardRepository;
 
-    @GetMapping("/calendar")
-    public List<String> getCalendarEventTitles(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient)
+    @GetMapping("/events")
+    public ResponseEntity<List<Map<String, Object>>> getCalendarEvents(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient)
             throws GeneralSecurityException, IOException {
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
 
@@ -52,11 +50,30 @@ public class CalendarRestController {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        Events events = service.events().list("primary").setMaxResults(10).execute();
+        DateTime now = new DateTime(System.currentTimeMillis());
+        Events events = service.events().list("primary")
+                .setMaxResults(250)  // Increased for more comprehensive calendar view
+                .setTimeMin(now)
+                .setOrderBy("startTime")
+                .setSingleEvents(true)
+                .execute();
 
-        return events.getItems().stream()
-                .map(Event::getSummary)
+        List<Map<String, Object>> formattedEvents = events.getItems().stream()
+                .map(event -> {
+                    Map<String, Object> formattedEvent = new HashMap<>();
+                    formattedEvent.put("id", event.getId());
+                    formattedEvent.put("title", event.getSummary());
+                    formattedEvent.put("start", event.getStart().getDateTime() != null
+                            ? event.getStart().getDateTime().toStringRfc3339()
+                            : event.getStart().getDate().toString());
+                    formattedEvent.put("end", event.getEnd().getDateTime() != null
+                            ? event.getEnd().getDateTime().toStringRfc3339()
+                            : event.getEnd().getDate().toString());
+                    formattedEvent.put("allDay", event.getStart().getDateTime() == null);
+                    return formattedEvent;
+                })
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(formattedEvents);
     }
 
     @PostMapping("/create-event")
