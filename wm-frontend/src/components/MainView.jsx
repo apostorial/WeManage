@@ -3,12 +3,23 @@ import axios from '../axios-config.js';
 import Sidebar from './Sidebar.jsx';
 import Board from './Board.jsx';
 import Navbar from './Navbar.jsx';
+import Calendar from './Calendar.jsx';
 import '../styles/MainView.css';
 
 const MainView = () => {
   const [boards, setBoards] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState(null);
   const [error, setError] = useState(null);
+  const [view, setView] = useState('board');
+
+  const handleBoardSelect = (board) => {
+    setSelectedBoard(board);
+    setView('board');
+  };
+
+  const handleViewChange = (newView) => {
+    setView(newView);
+  };
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -28,10 +39,6 @@ const MainView = () => {
 
     fetchBoards();
   }, [selectedBoard]);
-
-  const handleBoardSelect = (board) => {
-    setSelectedBoard(board);
-  };
 
   const handleAddBoard = async (newBoardName) => {
     const formData = new URLSearchParams();
@@ -82,12 +89,23 @@ const MainView = () => {
     <div className="main">
       <Navbar />
       <div className="content-wrapper">
-        <Sidebar boards={boards} onBoardSelect={handleBoardSelect} onAddBoard={handleAddBoard} onDeleteBoard={handleDeleteBoard} />
-        {selectedBoard ? (
+        <Sidebar 
+          boards={boards} 
+          onBoardSelect={handleBoardSelect} 
+          onAddBoard={handleAddBoard} 
+          onDeleteBoard={handleDeleteBoard} 
+          onViewChange={handleViewChange}
+          currentView={view}
+        />
+        {view === 'board' ? (
+          selectedBoard ? (
             <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
           ) : (
             <div className="no-board-selected">Select a board to view its details</div>
-          )}
+          )
+        ) : (
+          <Calendar />
+        )}
       </div>
     </div>
   );

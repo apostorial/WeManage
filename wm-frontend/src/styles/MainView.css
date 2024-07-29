@@ -1,17 +1,47 @@
-body {
+body, html {
     margin: 0;
-    line-height: normal;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
 }
-
 
 .main {
     width: 100%;
-    position: fixed;
+    height: 100vh;
     background-color: #141414;
-    height: 1024px;
-    overflow: hidden;
-    text-align: left;
-    font-size: 14px;
     color: #efefef;
     font-family: 'Work Sans';
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper {
+    display: flex;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+
+.main-content {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+}
+
+.no-board-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.2em;
+    color: #666;
+}
+
+.google-calendar {
+    height: 100%;
+    width: 100%;
+}
+
+.google-calendar .fc {
+    height: 100%;
 }
