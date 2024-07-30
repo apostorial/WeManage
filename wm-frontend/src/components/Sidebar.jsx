@@ -101,6 +101,7 @@ const Sidebar = ({ boards, onBoardSelect, onAddBoard, onDeleteBoard, onViewChang
             </div>
             <a href="" className={`sidebar-item ${currentView === 'calendar' ? 'active' : ''}`} onClick={(e) => {
               e.preventDefault();
+              setIsBoardsExpanded(false);
               onViewChange('calendar');
             }}>
               <img src={calendarIcon} alt="Calendar Icon" className="sidebar-icon" />
