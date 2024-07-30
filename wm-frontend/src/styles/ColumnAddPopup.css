@@ -159,10 +159,10 @@
     align-self: stretch;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     align-items: flex-start;
     justify-content: flex-start;
     gap: 10px;
+    height: 32px;
 }
 .content {
     width: 368px;

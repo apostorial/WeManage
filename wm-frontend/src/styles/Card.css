@@ -41,7 +41,7 @@
 .cardheader-parent {
   width: 250px;
   position: relative;
-  border-radius: 14px;
+  border-radius: 12px;
   background-color: #141414;
   border: 0.6px solid rgba(235, 247, 251, 0.3);
   box-sizing: border-box;
@@ -50,6 +50,17 @@
   font-size: 14px;
   color: #ebf7fb;
   font-family: 'Work Sans';
-  margin: 8px 12px;
   padding: 8px;
+  margin-bottom: 8px;
+}
+
+.card-container {
+  flex-grow: 1;
+  height: auto;
+  overflow-y: auto;
+  padding: 12px 12px 0px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
 }

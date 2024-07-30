@@ -45,3 +45,17 @@ body, html {
 .google-calendar .fc {
     height: 100%;
 }
+
+.main-area {
+    margin-left: 240px;
+    padding: 16px 24px;
+    width: calc(100% - 240px);
+    position: relative;
+    height: calc(100vh - 64px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: left;
+    font-size: 14px;
+    color: #fff;
+    font-family: 'Work Sans';
+}
