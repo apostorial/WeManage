@@ -258,7 +258,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
           </div>
         </div>
       </div>
-      <p>{board.description}</p>
+      {/* <p>{board.description}</p> */}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="all-columns" direction="horizontal" type="column">
           {(provided) => (
