@@ -97,6 +97,7 @@ const MainView = () => {
           onViewChange={handleViewChange}
           currentView={view}
         />
+        <div className='main-area'>
         {view === 'board' ? (
           selectedBoard ? (
             <Board board={selectedBoard} onBoardNameUpdate={handleBoardNameUpdate} />
@@ -106,6 +107,7 @@ const MainView = () => {
         ) : (
           <Calendar />
         )}
+        </div>
       </div>
     </div>
   );
