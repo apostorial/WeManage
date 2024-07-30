@@ -45,8 +45,8 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
                         <path d="M27.6602 28.4L30.5602 29.14" stroke="#3E43FB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     <div className="text-and-supporting-text">
-                    <div className="text">Create a new column</div>
-                    <div className="supporting-text">Please enter a name and select a color for this column.</div>
+                    <div className="text">Create a new list</div>
+                    <div className="supporting-text">Please enter a name and select a color for this list.</div>
                 </div>
                 {error && <div className="error-message">{error}</div>}
                     <div className="column-input-field">
@@ -63,7 +63,7 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
                                         <div
                                             key={color}
                                             className={`color-${index + 1} ${selectedColor === color ? 'selected' : ''}`}
-                                            style={{ backgroundColor: color }}
+                                            style={{ backgroundColor: color, cursor: 'pointer'}}
                                             onClick={() => setSelectedColor(color)}
                                         ></div>
                                     ))}
@@ -79,7 +79,7 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
                         </div>
                         <div className="button1">
                             <div className="button-base1" onClick={handleAddColumn }>
-                                <div className="text3">Add column</div>
+                                <div className="text3">Add list</div>
                             </div>
                         </div>
                     </div>
