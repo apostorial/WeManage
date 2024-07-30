@@ -1,7 +1,9 @@
 package ma.wemanity.wmbackend.config;
 
 import lombok.AllArgsConstructor;
+import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.UserRepository;
+import ma.wemanity.wmbackend.services.BoardServiceImpl;
 import ma.wemanity.wmbackend.services.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +26,7 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, BoardRepository boardRepository, BoardServiceImpl boardServiceImpl) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -44,7 +46,7 @@ public class SecurityConfig {
                         .authorizationEndpoint(auth -> auth
                                 .baseUri("/oauth2/authorization")
                         )
-                        .successHandler(new OAuth2AuthenticationSuccessHandler(userRepository))
+                        .successHandler(new OAuth2AuthenticationSuccessHandler(userRepository, boardServiceImpl))
                         .failureHandler(new OAuth2AuthenticationFailureHandler())
                 ).logout(logout -> logout
                         .deleteCookies("JSESSIONID")

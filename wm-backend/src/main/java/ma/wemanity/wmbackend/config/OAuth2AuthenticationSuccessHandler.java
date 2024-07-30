@@ -3,8 +3,12 @@ package ma.wemanity.wmbackend.config;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.entities.User;
+import ma.wemanity.wmbackend.exceptions.ServiceException;
+import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.UserRepository;
+import ma.wemanity.wmbackend.services.BoardServiceImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -19,6 +23,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final UserRepository userRepository;
     private static final String ALLOWED_DOMAIN = "wemanity.com";
     private static final String LOGIN_PAGE_URL = "http://localhost:5173/";
+    private final BoardServiceImpl boardServiceImpl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -39,6 +44,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (existingUser.isEmpty()) {
             User newUser = new User(name, email, googleId);
             userRepository.save(newUser);
+            try {
+                boardServiceImpl.createBoard("Board", "Default board");
+            } catch (ServiceException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         String targetUrl = determineTargetUrl(request, response, authentication);
