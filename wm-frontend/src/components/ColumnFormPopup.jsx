@@ -1,13 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from '../axios-config.js';
 import '../styles/ColumnAddPopup.css';
 
-const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
+const ColumnFormPopup = ({ onClose, onSubmit, boardId, editColumn = null }) => {
     const [columnName, setColumnName] = useState('');
     const [selectedColor, setSelectedColor] = useState('null');
     const [error, setError] = useState(null);
+    const isEditMode = !!editColumn;
+    const popupRef = useRef(null);
 
-    const handleAddColumn = async () => {
+    useEffect(() => {
+        if (isEditMode) {
+            setColumnName(editColumn.name);
+            setSelectedColor(editColumn.color);
+        }
+    }, [editColumn]);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Enter' && columnName.trim() && selectedColor !== 'null') {
+                e.preventDefault();
+                handleSubmit();
+            }
+        };
+    
+        const currentPopup = popupRef.current;
+        if (currentPopup) {
+            currentPopup.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            if (currentPopup) {
+                currentPopup.removeEventListener('keydown', handleKeyDown);
+            }
+        };
+    }, [columnName, selectedColor]);
+
+    const handleSubmit = async () => {
         if (columnName.trim() && selectedColor) {
             setError(null);
             try {
@@ -16,16 +45,25 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
                 params.append('name', columnName.trim());
                 params.append('color', selectedColor);
 
-                const response = await axios.post('/api/columns/create', params, {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                });
-                onAddColumn(response.data);
+                let response;
+                if (isEditMode) {
+                    response = await axios.put(`/api/columns/update/${editColumn.id}`, params, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    });
+                } else {
+                    response = await axios.post('/api/columns/create', params, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    });
+                }
+                onSubmit(response.data);
                 onClose();
             } catch (err) {
-                setError('Failed to create column. Please try again.');
-                console.error('Error creating column:', err);
+                setError(`Failed to ${isEditMode ? 'update' : 'create'} column. Please try again.`);
+                console.error(`Error ${isEditMode ? 'updating' : 'creating'} column:`, err);
             }
         }
     };
@@ -33,7 +71,7 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
     const colors = ['#91cd56', '#34d1b2', '#01b0fd', '#8568f4', '#ae52d3', '#ec4ea5', '#fb8120', '#fac624', '#a9a9a9'];
   
     return (
-        <div className="overlay" id="newListOverlay">
+        <div className="overlay" id="newListOverlay" ref={popupRef} tabIndex='0'>
             <div className="new-list-popup">
                 <div className="content">
                     <svg className="featured-icon" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,15 +83,23 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
                         <path d="M27.6602 28.4L30.5602 29.14" stroke="#3E43FB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     <div className="text-and-supporting-text">
-                    <div className="text">Create a new list</div>
+                    <div className="text">{isEditMode ? 'Edit list' : 'Create a new list'}</div>
                     <div className="supporting-text">Please enter a name and select a color for this list.</div>
                 </div>
                 {error && <div className="error-message">{error}</div>}
                     <div className="column-input-field">
                         <div className="input-with-label">
                             <div className="column-label">List name</div>
-                            <input type="text" id="listNameInput" placeholder="e.g. In Review" className="newlist-input" required value={columnName} onChange={(e) => setColumnName(e.target.value)}/>
-                        </div>
+                            <input 
+                                type="text" 
+                                id="listNameInput" 
+                                placeholder="e.g. In Review" 
+                                className="newlist-input" 
+                                required 
+                                value={columnName} 
+                                onChange={(e) => setColumnName(e.target.value)}
+                            />
+                            </div>
                     </div>
                     <div className="column-input-field">
                     <div className="input-with-label">
@@ -78,8 +124,8 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
                             </div>
                         </div>
                         <div className="button1">
-                            <div className="button-base1" onClick={handleAddColumn }>
-                                <div className="text3">Add list</div>
+                            <div className="button-base1" onClick={handleSubmit}>
+                                <div className="text3">{isEditMode ? 'Update list' : 'Add list'}</div>
                             </div>
                         </div>
                     </div>
@@ -90,4 +136,4 @@ const ColumnAddPopup = ({ onClose, onAddColumn, boardId }) => {
     );
   };
 
-export default ColumnAddPopup;
+export default ColumnFormPopup;
