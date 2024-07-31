@@ -119,3 +119,33 @@ cursor: pointer;
   font-family: 'Work Sans';
   margin-bottom: 16px;
 }
+
+.board-title-section {
+  display: inline-flex;
+  align-items: center;
+  color: #efefef;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border-radius: 6px;
+  max-width:fit-content;
+}
+
+.board-title-section:hover,
+.board-title-section:focus-within {
+  background-color: rgba(235, 247, 251, 0.2);
+}
+
+.board-title-section input {
+  background: none;
+  border: none;
+  color: #efefef;
+  font-family: 'Work Sans';
+  font-size: 24px;
+  outline: none;
+  padding: 4px 0px;
+  margin: 0;
+  line-height: inherit;
+  height: auto;
+  min-width: 20px;
+  width: 100%;
+}

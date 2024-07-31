@@ -10,6 +10,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [columns, setColumns] = useState([]);
   const [error, setError] = useState(null);
   const [isEditingBoardName, setIsEditingBoardName] = useState(false);
+  const [isBoardNameFocused, setIsBoardNameFocused] = useState(false);
   const [boardName, setBoardName] = useState(board.name);
   const [color, setColor] = useState('#ffffff');
   const [isAddColumnPopupOpen, setIsAddColumnPopupOpen] = useState(false);
@@ -60,14 +61,22 @@ const Board = ({ board, onBoardNameUpdate }) => {
     setBoardName(e.target.value);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = async (e) => {
     if (e.key === 'Enter') {
-      updateBoardName();
+      e.preventDefault(); // Prevent default to avoid any unwanted behavior
+      await updateBoardName();
+      setIsBoardNameFocused(false);
+      e.target.blur(); // Remove focus from the input
     }
   };
 
-  const showBoardNameInput = () => {
-    setIsEditingBoardName(true);
+  const handleBoardNameFocus = () => {
+    setIsBoardNameFocused(true);
+  };
+
+  const handleBoardNameBlur = async () => {
+    await updateBoardName();
+    setIsBoardNameFocused(false);
   };
 
   const updateBoardName = async () => {
@@ -235,9 +244,17 @@ const Board = ({ board, onBoardNameUpdate }) => {
       </div>
       <div className="board-header">
         <div className="board-title-section">
-          <span className="board-name">
-            {boardName}
-          </span>
+          <input
+              type="text"
+              value={boardName}
+              onChange={handleBoardNameChange}
+              onKeyDown={handleKeyDown}
+              onFocus={handleBoardNameFocus}
+              onBlur={handleBoardNameBlur}
+              className="board-name-input"
+              placeholder={board.name}
+              size={boardName.length}
+          />
         </div>
         <div className="board-actions">
           <button onClick={addColumn} className="add-new-parent">
