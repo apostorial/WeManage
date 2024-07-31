@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Column from './Column';
-import ColumnAddPopup from './ColumnAddPopup';
+import ColumnFormPopup from './ColumnFormPopup';
 import '../styles/Board.css';
 import addIcon from '../assets/add.svg';
 
@@ -14,6 +14,8 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [boardName, setBoardName] = useState(board.name);
   const [color, setColor] = useState('#ffffff');
   const [isAddColumnPopupOpen, setIsAddColumnPopupOpen] = useState(false);
+  const [isEditColumnPopupOpen, setIsEditColumnPopupOpen] = useState(false);
+  const [columnToEdit, setColumnToEdit] = useState(null);
 
   useEffect(() => {
     setBoardName(board.name);
@@ -57,16 +59,34 @@ const Board = ({ board, onBoardNameUpdate }) => {
   setIsAddColumnPopupOpen(false);
   };
 
+  const editColumn = (column) => {
+    setColumnToEdit(column);
+    setIsEditColumnPopupOpen(true);
+  };
+  
+  const closeEditColumnPopup = () => {
+    setIsEditColumnPopupOpen(false);
+    setColumnToEdit(null);
+  };
+  
+  const handleUpdateColumn = (updatedColumn) => {
+    setColumns(prevColumns =>
+      prevColumns.map(col =>
+        col.id === updatedColumn.id ? { ...col, ...updatedColumn } : col
+      )
+    );
+  };
+
   const handleBoardNameChange = (e) => {
     setBoardName(e.target.value);
   };
 
   const handleKeyDown = async (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent default to avoid any unwanted behavior
+      e.preventDefault();
       await updateBoardName();
       setIsBoardNameFocused(false);
-      e.target.blur(); // Remove focus from the input
+      e.target.blur();
     }
   };
 
@@ -292,6 +312,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
                         onAddCard={handleAddCard}
                         onUpdateCard={handleUpdateCard}
                         onDeleteCard={handleDeleteCard}
+                        onEditColumn={editColumn}
                       />
                     </div>
                   )}
@@ -302,13 +323,14 @@ const Board = ({ board, onBoardNameUpdate }) => {
           )}
         </Droppable>
       </DragDropContext>
-      {isAddColumnPopupOpen && (
-        <ColumnAddPopup
-          onClose={closeAddColumnPopup}
-          onAddColumn={handleAddColumn}
-          boardId={board.id}
-        />
-      )}
+      {(isAddColumnPopupOpen || isEditColumnPopupOpen) && (
+  <ColumnFormPopup
+    onClose={isAddColumnPopupOpen ? closeAddColumnPopup : closeEditColumnPopup}
+    onSubmit={isAddColumnPopupOpen ? handleAddColumn : handleUpdateColumn}
+    boardId={board.id}
+    editColumn={columnToEdit}
+  />
+)}
     </div>
   );
 };
