@@ -34,6 +34,13 @@
 .to-do-text {
     font-weight: 500;
     letter-spacing: -0.05em;
+    transition: background-color 0.3s;
+    padding:2px 4px;
+    border-radius: 6px;
+}
+
+.to-do-text:hover {
+  background-color: rgba(235, 247, 251, 0.2);
 }
 
 .cards-counter {

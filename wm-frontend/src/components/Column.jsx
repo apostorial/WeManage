@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import Card from './Card';
@@ -7,11 +7,14 @@ import deleteIcon from '../assets/delete.svg'
 import divider from '../assets/divider.svg'
 import EmptyState from '../assets/empty_state.svg?react';
 
-const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdateCard, onDeleteCard }) => {
+const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdateCard, onDeleteCard, onEditColumn }) => {
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardName, setNewCardName] = useState('');
-  const [isEditingColumnName, setIsEditingColumnName] = useState(false);
   const [columnName, setColumnName] = useState(column.name);
+
+  useEffect(() => {
+    setColumnName(column.name);
+  }, [column.name]);
 
   const handleAddCard = async (e) => {
     e.preventDefault();
@@ -27,16 +30,6 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
       setIsAddingCard(false);
     } catch (error) {
       console.error('Error creating card:', error);
-    }
-  };
-
-  const updateColumnName = async () => {
-    try {
-      await axios.put(`/api/columns/update/${column.id}`, new URLSearchParams({ name: columnName }));
-      setIsEditingColumnName(false);
-      onColumnNameUpdate(column.id, columnName);
-    } catch (error) {
-      console.error('Error updating column name:', error);
     }
   };
 
@@ -60,7 +53,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onAddCard, onUpdat
       <div className="todo-header">
         <div className='todo-label'>
           <div className='label-color' style={{backgroundColor: column.color}}></div>
-          <div className='to-do-text'>{columnName}</div>
+          <div className='to-do-text' onClick={() => onEditColumn(column)}>{columnName}</div>
           <div className='cards-counter' style={{color: column.color}}>
             <div className='cards-number'>{column.cards.length}</div>
           </div>
