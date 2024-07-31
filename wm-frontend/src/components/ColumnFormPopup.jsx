@@ -8,6 +8,7 @@ const ColumnFormPopup = ({ onClose, onSubmit, boardId, editColumn = null }) => {
     const [error, setError] = useState(null);
     const isEditMode = !!editColumn;
     const popupRef = useRef(null);
+    const inputRef = useRef(null);
 
     useEffect(() => {
         if (isEditMode) {
@@ -35,6 +36,12 @@ const ColumnFormPopup = ({ onClose, onSubmit, boardId, editColumn = null }) => {
             }
         };
     }, [columnName, selectedColor]);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
 
     const handleSubmit = async () => {
         if (columnName.trim() && selectedColor) {
@@ -91,6 +98,7 @@ const ColumnFormPopup = ({ onClose, onSubmit, boardId, editColumn = null }) => {
                         <div className="input-with-label">
                             <div className="column-label">List name</div>
                             <input 
+                                ref={inputRef}
                                 type="text" 
                                 id="listNameInput" 
                                 placeholder="e.g. In Review" 
