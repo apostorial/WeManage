@@ -39,14 +39,12 @@
 
 .board-name {
   color: #FFF;
-leading-trim: both;
-text-edge: cap;
-font-family: "Work Sans";
-font-size: 24px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-cursor: pointer;
+  font-family: "Work Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
 }
 
 .board-actions {
