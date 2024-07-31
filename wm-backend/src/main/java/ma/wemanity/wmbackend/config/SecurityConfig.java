@@ -1,7 +1,6 @@
 package ma.wemanity.wmbackend.config;
 
 import lombok.AllArgsConstructor;
-import ma.wemanity.wmbackend.repositories.BoardRepository;
 import ma.wemanity.wmbackend.repositories.UserRepository;
 import ma.wemanity.wmbackend.services.BoardServiceImpl;
 import ma.wemanity.wmbackend.services.CustomOAuth2UserService;
@@ -26,7 +25,7 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, BoardRepository boardRepository, BoardServiceImpl boardServiceImpl) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, BoardServiceImpl boardServiceImpl) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
