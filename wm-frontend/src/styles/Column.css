@@ -95,8 +95,7 @@
   letter-spacing: -0.05em;
 }
 
-.add-new,
-.input-wrapper {
+.add-new {
   flex-grow: 1;
   min-width: 0;
 }
@@ -104,17 +103,6 @@
 .add-icon-input {
   flex-shrink: 0;
   margin-right: 8px;
-}
-
-.input-wrapper {
-  background: none;
-  border: none;
-  color: #efefef;
-  font-family: 'Work Sans';
-  font-size: 14px;
-  outline: none;
-  padding: 0;
-  margin: 0;
 }
 
 .empty-state-container {
