@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from '../axios-config.js';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Column from './Column';
@@ -7,6 +7,7 @@ import '../styles/Board.css';
 import addIcon from '../assets/add.svg';
 
 const Board = ({ board, onBoardNameUpdate }) => {
+  const columnsContainerRef = useRef(null);
   const [columns, setColumns] = useState([]);
   const [error, setError] = useState(null);
   const [isEditingBoardName, setIsEditingBoardName] = useState(false);
@@ -16,6 +17,26 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [isAddColumnPopupOpen, setIsAddColumnPopupOpen] = useState(false);
   const [isEditColumnPopupOpen, setIsEditColumnPopupOpen] = useState(false);
   const [columnToEdit, setColumnToEdit] = useState(null);
+
+  useEffect(() => {
+    const handleWheel = (e) => {
+      if (columnsContainerRef.current) {
+        e.preventDefault();
+        columnsContainerRef.current.scrollLeft += e.deltaY;
+      }
+    };
+
+    const currentRef = columnsContainerRef.current;
+    if (currentRef) {
+      currentRef.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     setBoardName(board.name);
@@ -299,7 +320,10 @@ const Board = ({ board, onBoardNameUpdate }) => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="all-columns" direction="horizontal" type="column">
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef} className="columns-container">
+            <div {...provided.droppableProps} ref={(el) => {
+              provided.innerRef(el);
+              columnsContainerRef.current = el;
+            }}  className="columns-container">
               {columns.map((column, index) => (
                 <Draggable key={column.id} draggableId={column.id} index={index}>
                   {(provided) => (
