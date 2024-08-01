@@ -52,7 +52,7 @@ public class CalendarRestController {
 
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
-                .setMaxResults(250)  // Increased for more comprehensive calendar view
+                .setMaxResults(250)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
@@ -78,7 +78,6 @@ public class CalendarRestController {
 
     @PostMapping("/create-event")
     public ResponseEntity<String> createCalendarEvent(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient,
-                                                      @RequestParam("name") String name,
                                                       @RequestParam("time") String time,
                                                       @RequestParam("cardId") String cardId)
             throws GeneralSecurityException, IOException, CardNotFoundException {
@@ -94,17 +93,18 @@ public class CalendarRestController {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        Event event = new Event()
-                .setSummary(name)
-                .setLocation("")
-                .setStart(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)))
-                .setEnd(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)));
-
         Optional<Card> optionalCard = cardRepository.findById(cardId);
         if (optionalCard.isEmpty()) {
             throw new CardNotFoundException("Card not found with id: " + cardId);
         }
         Card card = optionalCard.get();
+
+        Event event = new Event()
+                .setSummary("Meeting with " + card.getName())
+                .setLocation("")
+                .setStart(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)))
+                .setEnd(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)));
+
         card.setMeeting(time);
         cardRepository.save(card);
 
