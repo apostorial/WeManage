@@ -1,13 +1,11 @@
 package ma.wemanity.wmbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -36,6 +34,7 @@ public class Card {
     private Column column;
     @DBRef
     private Set<Label> labels = new LinkedHashSet<>();
+    private ObjectId file;
 
     @JsonProperty("comments")
     public List<String> getCommentsForSerialization() {
