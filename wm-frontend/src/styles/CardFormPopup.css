@@ -1,0 +1,472 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.card-icon1 {
+    width: 24px;
+    position: relative;
+    height: 24px;
+}
+.card-icon {
+    border-radius: 10px;
+    background-color: rgba(62, 67, 251, 0.1);
+    border: 1px solid #3e43fb;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px;
+}
+.text {
+    align-self: stretch;
+    position: relative;
+    line-height: 28px;
+    font-weight: 500;
+}
+.supporting-text {
+    align-self: stretch;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: -0.05em;
+    line-height: 20px;
+    color: #585c5d;
+}
+.text-and-supporting-text {
+    width: 540px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2px;
+}
+.new-card-popup-content {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0px 24px;
+    gap: 14px;
+    z-index: 0;
+}
+.new-card-popup-divider-header {
+    align-self: stretch;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+    z-index: 1;
+}
+.icon {
+    width: 12px;
+    position: relative;
+    height: 12px;
+}
+.x {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6px;
+}
+.x-icon {
+    margin: 0 !important;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    z-index: 2;
+}
+.new-card-popup-header {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 24px 0px 0px;
+    position: relative;
+    gap: 14px;
+    font-size: 18px;
+}
+.click-to-upload {
+    position: relative;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.card-popup-label {
+    position: relative;
+    line-height: 20px;
+    font-weight: 500;
+}
+.vuesaxlinearuser-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+}
+.text1 {
+    flex: 1;
+    position: relative;
+    letter-spacing: -0.05em;
+    line-height: 20px;
+}
+/* .content {
+    width: 246px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+} */
+.newcards-input-container {
+    position: relative;
+    height: 38px;
+    width: 264px;
+ }
+.input {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: 0.6px solid rgba(239, 239, 239, 0.2);
+    box-sizing: border-box;
+    padding: 8px 12px 8px 40px;
+    color: #ebf7fb;
+    font-family: 'Work Sans';
+}
+
+.input-datepicker {
+    width: 264px;
+    height: 38px;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: 0.6px solid rgba(239, 239, 239, 0.2);
+    box-sizing: border-box;
+    padding: 8px 12px 8px 40px;
+    color: #ebf7fb;
+    font-family: 'Work Sans';
+    margin-bottom:50px !important;
+}
+.card-popup-input-with-label {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+}
+.fullname-input-field {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.content1 {
+    font-family: 'Work Sans';
+    background-color: transparent;
+    outline: none;
+    appearance: none;
+    border: 0px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+.company-input-field {
+    width: 264px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.input-with-label5 {
+    width: 264px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+}
+.website-input-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.form {
+    width: 264px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+}
+.content-divider-icon {
+    align-self: stretch;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+    object-fit: contain;
+}
+.text8 {
+    align-self: stretch;
+    position: relative;
+    line-height: 20px;
+    font-weight: 500;
+}
+.supporting-text1 {
+    align-self: stretch;
+    position: relative;
+    letter-spacing: -0.05em;
+    line-height: 20px;
+    color: #585c5d;
+}
+.plus-icon {
+    width: 12px;
+    position: relative;
+    height: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.card-popup-add-label-button {
+    border-radius: 12px;
+    background-color: rgba(62, 67, 251, 0.2);
+    height: 22px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2px 8px;
+    box-sizing: border-box;
+}
+.card-popup-labels-container {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.add-labels {
+    width: 326px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 12px;
+}
+.supporting-text2 {
+    align-self: stretch;
+    position: relative;
+    line-height: 20px;
+    color: #585c5d;
+}
+.file-upload-icon {
+    width: 40px;
+    position: relative;
+    border-radius: 28px;
+    height: 40px;
+}
+.upload-button-base {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.upload-button {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.text11 {
+    position: relative;
+    line-height: 20px;
+    color: #585c5d;
+}
+.action {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px;
+}
+.supporting-text3 {
+    align-self: stretch;
+    position: relative;
+    font-size: 12px;
+    line-height: 18px;
+    color: #585c5d;
+    text-align: center;
+}
+.text-and-supporting-text3 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.content7 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+}
+.file-upload-base {
+    align-self: stretch;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: 0.6px solid rgba(239, 239, 239, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 24px;
+}
+.file-upload {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    color: #3e43fb;
+}
+.labels-and-attachments {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+}
+.new-card-popup-form {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px 24px 0px;
+    gap: 16px;
+    color: rgba(235, 247, 251, 0.9);
+}
+.text12 {
+    position: relative;
+    line-height: 20px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+.button-base {
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: 0.6px solid rgba(239, 239, 239, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 18px;
+}
+.new-card-popup-cancel-button {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.button-base1 {
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    border-radius: 8px;
+    background-color: #3e43fb;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px;
+}
+.new-card-popup-add-card-button {
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.new-card-popup-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 12px;
+}
+.new-card-popup-actions {
+    position: absolute;
+    top: 48px;
+    right: 0px;
+    width: 670px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 0px 24px 24px;
+    box-sizing: border-box;
+}
+.new-card-popup-divider-footer1 {
+    align-self: stretch;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+}
+.new-card-popup-divider-footer {
+    position: absolute;
+    top: calc(50% - 54px);
+    left: calc(50% - 335px);
+    width: 670px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 24px 0px;
+    box-sizing: border-box;
+}
+.new-card-popup-footer {
+    align-self: stretch;
+    position: relative;
+    height: 108px;
+}
+.new-card-popup {
+    position: relative;
+    border-radius: 12px;
+    background-color: #1a1a1a;
+    border: 0.6px solid rgba(239, 239, 239, 0.2);
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: 14px;
+    color: #ebf7fb;
+    font-family: 'Work Sans';
+}
