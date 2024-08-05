@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../axios-config.js';
 import '../styles/Card.css';
 
-const Card = ({ card, onUpdate, onDelete }) => {
+const Card = ({ card, onUpdate, onDelete, onEditCard}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: card.name || '',
@@ -192,7 +192,7 @@ const Card = ({ card, onUpdate, onDelete }) => {
 
 
   return (
-    <div className="cardheader-parent">
+    <div className="cardheader-parent" onClick={() => onEditCard(card)}>
       <div className="cardheader">
         <div className="card-name">{card.name}</div>
         <div className="card-date">{timeAgo(card.createdAt)}</div>
