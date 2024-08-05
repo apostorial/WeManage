@@ -25,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -82,12 +81,22 @@ public class CardRestController {
             @RequestParam(required = false) Set<String> labelIds,
             @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
         try {
+            Optional<Card> existingCardOptional = cardRepository.findById(id);
+
+            if (existingCardOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Card existingCard = existingCardOptional.get();
+            boolean meetingChanged = (existingCard.getMeeting() == null && meeting != null) ||
+                    (existingCard.getMeeting() != null && !existingCard.getMeeting().equals(meeting));
+
             Card updatedCard = cardService.updateCard(id, name, company, position, email, number, website, meeting, labelIds);
-            if (meeting != null && !meeting.isEmpty()) {
+            if (meetingChanged) {
                 String eventLink = createCalendarEvent(authorizedClient, meeting, id);
                 return ResponseEntity.ok(Map.of("card", updatedCard, "eventLink", eventLink));
             } else {
-                return ResponseEntity.ok(updatedCard);
+                return ResponseEntity.ok(Map.of("card", updatedCard));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating card: " + e.getMessage());
