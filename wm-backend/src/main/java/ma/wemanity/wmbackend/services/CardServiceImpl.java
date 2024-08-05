@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service @AllArgsConstructor
 public class CardServiceImpl implements CardService {
@@ -33,7 +34,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card createCard(String columnId, String name) throws ServiceException {
+    public Card createCard(String columnId, String name, String company, String position, String email, String number, String website, String meeting, Set<String> labelIds) throws ServiceException {
         try {
             Optional<Column> optionalColumn = columnRepository.findById(columnId);
             if (optionalColumn.isEmpty()) {
@@ -43,6 +44,29 @@ public class CardServiceImpl implements CardService {
             Card card = new Card();
             card.setColumn(column);
             card.setName(name);
+            card.setCompany(company);
+            card.setPosition(position);
+            card.setEmail(email);
+            card.setNumber(number);
+            card.setWebsite(website);
+            card.setMeeting(meeting);
+
+            if (labelIds != null) {
+                Set<Label> labels = labelIds.stream()
+                        .map(id -> {
+                            try {
+                                return labelRepository.findById(id)
+                                        .orElseThrow(() -> new LabelNotFoundException("Label not found with id: " + id));
+                            } catch (LabelNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .collect(Collectors.toSet());
+                card.setLabels(labels);
+            } else {
+                card.setLabels(new HashSet<>());
+            }
+
             card.setCreatedAt(LocalDateTime.now());
             card.setUpdatedAt(LocalDateTime.now());
             Card savedCard = cardRepository.save(card);
