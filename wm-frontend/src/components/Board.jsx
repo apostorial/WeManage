@@ -19,26 +19,6 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [columnToEdit, setColumnToEdit] = useState(null);
 
   useEffect(() => {
-    const handleWheel = (e) => {
-      if (columnsContainerRef.current) {
-        e.preventDefault();
-        columnsContainerRef.current.scrollLeft += e.deltaY;
-      }
-    };
-
-    const currentRef = columnsContainerRef.current;
-    if (currentRef) {
-      currentRef.addEventListener('wheel', handleWheel, { passive: false });
-    }
-
-    return () => {
-      if (currentRef) {
-        currentRef.removeEventListener('wheel', handleWheel);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     setBoardName(board.name);
   }, [board]);
 
@@ -89,6 +69,10 @@ const Board = ({ board, onBoardNameUpdate }) => {
     setIsEditColumnPopupOpen(false);
     setColumnToEdit(null);
   };
+
+  const handleDeleteColumn = (columnId) => {
+    setColumns(columns.filter(col => col.id !== columnId));
+  };
   
   const handleUpdateColumn = (updatedColumn) => {
     setColumns(prevColumns =>
@@ -138,10 +122,6 @@ const Board = ({ board, onBoardNameUpdate }) => {
         col.id === columnId ? { ...col, name: newName } : col
       )
     );
-  };
-
-  const handleDeleteColumn = (columnId) => {
-    setColumns(columns.filter(col => col.id !== columnId));
   };
 
   const handleAddCard = (columnId, newCard) => {
@@ -348,13 +328,13 @@ const Board = ({ board, onBoardNameUpdate }) => {
         </Droppable>
       </DragDropContext>
       {(isAddColumnPopupOpen || isEditColumnPopupOpen) && (
-  <ColumnFormPopup
-    onClose={isAddColumnPopupOpen ? closeAddColumnPopup : closeEditColumnPopup}
-    onSubmit={isAddColumnPopupOpen ? handleAddColumn : handleUpdateColumn}
-    boardId={board.id}
-    editColumn={columnToEdit}
-  />
-)}
+        <ColumnFormPopup
+          onClose={isAddColumnPopupOpen ? closeAddColumnPopup : closeEditColumnPopup}
+          onSubmit={isAddColumnPopupOpen ? handleAddColumn : handleUpdateColumn}
+          boardId={board.id}
+          editColumn={columnToEdit}
+        />
+      )}
     </div>
   );
 };
