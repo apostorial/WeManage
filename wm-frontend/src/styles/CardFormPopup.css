@@ -162,6 +162,8 @@
     color: #ebf7fb;
     font-family: 'Work Sans';
     margin-bottom:50px !important;
+    cursor: pointer;
+    caret-color: transparent;
 }
 .card-popup-input-with-label {
     align-self: stretch;

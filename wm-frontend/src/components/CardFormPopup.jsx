@@ -28,6 +28,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
     const [cardNumber, setCardNumber] = useState('');
     const [cardWebsite, setCardWebsite] = useState('');
     const [cardMeetingDate, setCardMeetingDate] = useState(null);
+    const [labelIds, setLabelIds] = useState([]);
     const [error, setError] = useState(null);
     const isEditMode = !!editCard;
     const popupRef = useRef(null);
@@ -74,20 +75,19 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 if (cardMeetingDate) {
                     params.append('meeting', format(addHours(cardMeetingDate, 1), "yyyy-MM-dd'T'HH:mm:ssXXX"));
                 }
+                labelIds.forEach(id => params.append('labelIds', id));
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                };
 
                 let response;
                 if (isEditMode) {
-                    response = await axios.put(`/api/cards/update/${editCard.id}`, params, {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    });
+                    response = await axios.put(`/api/cards/update/${editCard.id}`, params, config);
                 } else {
-                    response = await axios.post('/api/cards/create', params, {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    });
+                    response = await axios.post('/api/cards/create', params, config);
                 }
                 onSubmit(response.data);
                 onClose();
