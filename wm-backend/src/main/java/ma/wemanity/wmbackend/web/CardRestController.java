@@ -1,21 +1,41 @@
 package ma.wemanity.wmbackend.web;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import lombok.AllArgsConstructor;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
+import ma.wemanity.wmbackend.repositories.CardRepository;
 import ma.wemanity.wmbackend.services.CardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.*;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/cards")
 public class CardRestController {
     private final CardService cardService;
+    private final CardRepository cardRepository;
+    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    private static final String APPLICATION_NAME = "WeManage";
 
     @GetMapping("/{id}")
     public ResponseEntity<Card> getCard(@PathVariable("id") String id) {
@@ -38,22 +58,30 @@ public class CardRestController {
         }
     }
 
+
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<Card> updateCard(@PathVariable("id") String id,
-                                           @RequestParam(name = "name", required = false) String name,
-                                           @RequestParam(name = "company", required = false) String company,
-                                           @RequestParam(name = "position", required = false) String position,
-                                           @RequestParam(name = "email", required = false) String email,
-                                           @RequestParam(name = "number", required = false) String number,
-                                           @RequestParam(name = "website", required = false) String website,
-                                           @RequestParam(name = "labelIds", required = false) Set<String> labelIds) {
+    public ResponseEntity<?> updateCardAndCreateEvent(
+            @PathVariable String id,
+            @RequestParam String name,
+            @RequestParam String company,
+            @RequestParam String position,
+            @RequestParam String email,
+            @RequestParam String number,
+            @RequestParam String website,
+            @RequestParam(required = false) String meeting,
+            @RequestParam(required = false) Set<String> labelIds,
+            @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
         try {
-            Card card = cardService.updateCard(id, name, company, position, email, number, website, labelIds);
-            return new ResponseEntity<>(card, HttpStatus.OK);
-        } catch (CardNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            Card updatedCard = cardService.updateCard(id, name, company, position, email, number, website, meeting, labelIds);
+            if (meeting != null && !meeting.isEmpty()) {
+                String eventLink = createCalendarEvent(authorizedClient, meeting, id);
+                return ResponseEntity.ok(Map.of("card", updatedCard, "eventLink", eventLink));
+            } else {
+                return ResponseEntity.ok(updatedCard);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating card: " + e.getMessage());
         }
     }
 
@@ -113,5 +141,39 @@ public class CardRestController {
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private String createCalendarEvent(OAuth2AuthorizedClient authorizedClient, String time, String cardId)
+            throws GeneralSecurityException, IOException, CardNotFoundException {
+        String accessToken = authorizedClient.getAccessToken().getTokenValue();
+
+        GoogleCredentials credentials = GoogleCredentials.create(new AccessToken(accessToken, null))
+                .createScoped(Collections.singleton(CalendarScopes.CALENDAR_EVENTS));
+
+        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+        Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, requestInitializer)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        Optional<Card> optionalCard = cardRepository.findById(cardId);
+        if (optionalCard.isEmpty()) {
+            throw new CardNotFoundException("Card not found with id: " + cardId);
+        }
+        Card card = optionalCard.get();
+
+        Event event = new Event()
+                .setSummary("Meeting with " + card.getName())
+                .setLocation("")
+                .setStart(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)))
+                .setEnd(new EventDateTime().setDateTime(DateTime.parseRfc3339(time)));
+
+        card.setMeeting(time);
+        cardRepository.save(card);
+
+        Event createdEvent = service.events().insert("primary", event).execute();
+
+        return createdEvent.getHtmlLink();
     }
 }
