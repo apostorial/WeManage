@@ -57,7 +57,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card updateCard(String id, String name, String company, String position, String email, String number, String website, Set<String> labelIds) throws ServiceException {
+    public Card updateCard(String id, String name, String company, String position, String email, String number, String website, String meeting, Set<String> labelIds) throws ServiceException {
         try {
             Optional<Card> optionalCard = cardRepository.findById(id);
             if (optionalCard.isEmpty()) {
@@ -71,6 +71,7 @@ public class CardServiceImpl implements CardService {
             card.setEmail(email);
             card.setNumber(number);
             card.setWebsite(website);
+            card.setMeeting(meeting);
             card.setUpdatedAt(LocalDateTime.now());
 
             for (Label label : card.getLabels()) {
