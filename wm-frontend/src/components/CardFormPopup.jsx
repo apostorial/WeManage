@@ -89,7 +89,8 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 } else {
                     response = await axios.post('/api/cards/create', params, config);
                 }
-                onSubmit(response.data);
+
+                onSubmit(response.data.card);
                 onClose();
             } catch (err) {
                 setError(`Failed to ${isEditMode ? 'update' : 'create'} card. Please try again.`);
