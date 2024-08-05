@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../axios-config.js';
-import '../styles/ColumnAddPopup.css';
+import '../styles/ColumnFormPopup.css';
 
 const ColumnFormPopup = ({ onClose, onSubmit, boardId, editColumn = null }) => {
     const [columnName, setColumnName] = useState('');
