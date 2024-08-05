@@ -96,20 +96,21 @@
   align-items: center;
   padding: 12px;
   cursor: pointer;
+  gap:4px;
 }
 
-.add-new {
+.column-add-new {
   font-size: 14px;
   letter-spacing: -0.05em;
   font-family: 'Work Sans';
   color: #ebf7fb;
   text-align: left;
+  font-weight: 400;
 }
 
 .add-column-icon {
   width: 16px;
   height: 16px;
-  margin: 0px 8px 0px 0px;
 }
 
 .empty-state-container {

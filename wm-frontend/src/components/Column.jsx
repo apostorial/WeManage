@@ -45,14 +45,14 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
   };
 
   const handleUpdateCard = (updatedCard) => {
-    setCards(prevCards =>
-        prevCards.map(card =>
-            card.id === updatedCard.id ? updatedCard : card
-        )
-    );
+    setCards(prevCards => {
+      const newCards = prevCards.map(card =>
+        card.id === updatedCard.id ? {...card, ...updatedCard} : card
+      );
+      return newCards;
+    });
     onUpdateCard(column.id, updatedCard);
-    closeEditCardPopup();
-};
+  };
 
   const handleDeleteCard = (cardId) => {
     setCards(cards.filter(card => card.id !== cardId));
@@ -131,7 +131,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
       <img src={divider} alt="Divider" className="footer-divider" />
       <div className="add-new-button" id="addNewButton" onClick={addCard}>
         <AddIcon className='add-column-icon' />
-        <div className="add-new">Add new</div>
+        <div className="column-add-new">Add new</div>
 			</div>
 
       {(isAddCardPopupOpen || isEditCardPopupOpen) && (
