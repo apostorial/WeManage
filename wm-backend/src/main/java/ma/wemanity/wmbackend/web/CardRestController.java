@@ -48,17 +48,26 @@ public class CardRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Card> createCard(@RequestParam("columnId") String columnId,
-                                               @RequestParam("name") String name) {
+    public ResponseEntity<?> createCard(
+            @RequestParam("columnId") String columnId,
+            @RequestParam("name") String name,
+            @RequestParam(value = "company", required = false) String company,
+            @RequestParam(value = "position", required = false) String position,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "number", required = false) String number,
+            @RequestParam(value = "website", required = false) String website,
+            @RequestParam(value = "meeting", required = false) String meeting,
+            @RequestParam(value = "labelIds", required = false) Set<String> labelIds) {
+
         try {
-            Card card = cardService.createCard(columnId, name);
+            Card card = cardService.createCard(columnId, name, company, position, email, number, website, meeting, labelIds);
             return new ResponseEntity<>(card, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Invalid input: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error creating card: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCardAndCreateEvent(
