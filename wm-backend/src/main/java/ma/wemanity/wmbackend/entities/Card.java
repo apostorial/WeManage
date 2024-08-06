@@ -62,10 +62,10 @@ public class Card {
     }
 
     public void addLabel(Label label) {
-        if (labels.size() < 3) {
+        if (labels.size() < 4) {
             labels.add(label);
         } else {
-            throw new IllegalStateException("A card can have a maximum of 3 labels");
+            throw new IllegalStateException("A card can have a maximum of 4 labels");
         }
     }
 
@@ -80,10 +80,10 @@ public class Card {
     }
 
     public void setLabels(Set<Label> labels) {
-        if (labels.size() <= 3) {
+        if (labels.size() <= 4) {
             this.labels = new LinkedHashSet<>(labels);
         } else {
-            throw new IllegalArgumentException("A card can have a maximum of 3 labels");
+            throw new IllegalArgumentException("A card can have a maximum of 4 labels");
         }
     }
 
