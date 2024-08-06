@@ -125,6 +125,10 @@ const Board = ({ board, onBoardNameUpdate }) => {
   };
 
   const handleAddCard = (columnId, newCard) => {
+    if (!newCard || !newCard.id) {
+      console.error('New card is missing or has no id');
+      return;
+    }
     setColumns(prevColumns =>
       prevColumns.map(col =>
         col.id === columnId
@@ -136,28 +140,28 @@ const Board = ({ board, onBoardNameUpdate }) => {
 
   const handleUpdateCard = (columnId, updatedCard) => {
     setColumns(prevColumns =>
-      prevColumns.map(col =>
-        col.id === columnId
-          ? {
-              ...col,
-              cards: col.cards.map(card =>
-                card.id === updatedCard.id ? updatedCard : card
-              )
-            }
-          : col
-      )
+        prevColumns.map(col =>
+            col.id === columnId
+                ? {
+                    ...col,
+                    cards: col.cards.map(card =>
+                        card.id === updatedCard.id ? updatedCard : card
+                    )
+                  }
+                : col
+        )
     );
-  };
+};
 
-  const handleDeleteCard = (columnId, cardId) => {
+const handleDeleteCard = (columnId, cardId) => {
     setColumns(prevColumns =>
-      prevColumns.map(col =>
-        col.id === columnId
-          ? { ...col, cards: col.cards.filter(card => card.id !== cardId) }
-          : col
-      )
+        prevColumns.map(col =>
+            col.id === columnId
+                ? { ...col, cards: col.cards.filter(card => card.id !== cardId) }
+                : col
+        )
     );
-  };
+};
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId, type } = result;
