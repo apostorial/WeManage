@@ -223,7 +223,7 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
                 {isColorDropdownOpen && (
                     <div className="colors-dropdown" id="colorsDropdown" ref={colorDropdownRef}>
                         <div className="colors-container">
-                            {['#91cd56', '#34d1b2', '#01b0fd', '#8568f4', '#ae52d3', '#ec4ea5', '#fb8120', '#fac624', '#a9a9a9'].map(color => (
+                            {['#91cd56', '#34d1b2', '#01b0fd', '#8568f4', '#ae52d3', '#ec4ea5', '#fb8120', '#fac624', '#a9a9a9', '#a74c3c', '#07bc0c', '#2043fb'].map(color => (
                                 <div 
                                     key={color} 
                                     className="color-option" 
