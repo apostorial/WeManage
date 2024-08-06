@@ -1,6 +1,7 @@
 package ma.wemanity.wmbackend.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.entities.Column;
 import ma.wemanity.wmbackend.entities.Label;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service @AllArgsConstructor
+@Service @AllArgsConstructor @Slf4j
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
@@ -98,28 +99,34 @@ public class CardServiceImpl implements CardService {
             card.setMeeting(meeting);
             card.setUpdatedAt(LocalDateTime.now());
 
-            for (Label label : card.getLabels()) {
-                label.getCards().remove(card);
-                labelRepository.save(label);
-            }
+            Set<Label> currentLabels = new HashSet<>(card.getLabels());
+            Set<Label> newLabels;
 
             if (labelIds != null && !labelIds.isEmpty()) {
-                Set<Label> labels = new HashSet<>(labelRepository.findAllById(labelIds));
-                for (Label label : labels) {
-                    if (label.getCards() == null) {
-                        label.setCards(new HashSet<>());
-                    }
-                    label.getCards().add(card);
-                    labelRepository.save(label);
-                }
-                card.setLabels(labels);
+                newLabels = new HashSet<>(labelRepository.findAllById(labelIds));
             } else {
-                card.setLabels(Collections.emptySet());
+                newLabels = new HashSet<>();
             }
+
+            currentLabels.stream()
+                    .filter(label -> !newLabels.contains(label))
+                    .forEach(label -> {
+                        label.getCards().remove(card);
+                        labelRepository.save(label);
+                    });
+
+            newLabels.stream()
+                    .filter(label -> !currentLabels.contains(label))
+                    .forEach(label -> {
+                        label.getCards().add(card);
+                        labelRepository.save(label);
+                    });
+
+            card.setLabels(newLabels);
 
             return cardRepository.save(card);
         } catch (Exception e) {
-            throw new ServiceException("Failed to update card", e);
+            throw new ServiceException("Failed to update card: " + e.getMessage(), e);
         }
     }
 
