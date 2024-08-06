@@ -3,7 +3,6 @@ package ma.wemanity.wmbackend.services;
 import ma.wemanity.wmbackend.entities.Card;
 import ma.wemanity.wmbackend.exceptions.CardNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ColumnNotFoundException;
-import ma.wemanity.wmbackend.exceptions.LabelNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 
 import java.util.List;
