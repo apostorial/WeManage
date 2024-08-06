@@ -79,6 +79,13 @@ public class LabelServiceImpl implements LabelService {
             if (optionalLabel.isEmpty()) {
                 throw new LabelNotFoundException("Label not found with id: " + id);
             }
+            Label label = optionalLabel.get();
+
+            for (Card card : new ArrayList<>(label.getCards())) {
+                card.removeLabel(label);
+                cardRepository.save(card);
+            }
+
             labelRepository.deleteById(id);
         } catch (Exception e) {
             throw new ServiceException("Failed to delete label", e);
