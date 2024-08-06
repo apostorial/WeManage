@@ -25,6 +25,8 @@ public class Label {
     @NotNull @Indexed(unique=true)
     private String color;
     @DBRef
+    private User owner;
+    @DBRef
     private Set<Card> cards = new HashSet<>();
 
     @JsonProperty("cards")
@@ -32,6 +34,11 @@ public class Label {
         return cards.stream()
                 .map(Card::getId)
                 .collect(Collectors.toList());
+    }
+
+    @JsonProperty("owner")
+    public String getOwnerForSerialization() {
+        return owner.getId();
     }
 
     public void addCard(Card card) {
