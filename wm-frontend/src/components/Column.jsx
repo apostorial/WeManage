@@ -9,7 +9,7 @@ import divider from '../assets/divider.svg'
 import EmptyState from '../assets/empty_state.svg?react';
 import AddIcon from '../assets/add.svg?react';
 
-const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard}) => {
+const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard, onDeleteCard}) => {
   const [columnName, setColumnName] = useState(column.name);
   const [isAddCardPopupOpen, setIsAddCardPopupOpen] = useState(false);
   const [isEditCardPopupOpen, setIsEditCardPopupOpen] = useState(false);
@@ -26,7 +26,11 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
   };
 
   const handleAddCard = (newCard) => {
-    setCards(prevCards => [...prevCards, { ...newCard }]);
+    if (!newCard || !newCard.id) {
+      console.error('New card is missing or has no id');
+      return;
+    }
+    setCards(prevCards => [...prevCards, newCard]);
     onAddCard(column.id, newCard);
   };
 
@@ -44,15 +48,20 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
     setCardToEdit(null);
   };
 
-  const handleUpdateCard = (updatedCard) => {
-    setCards(prevCards => {
-      const newCards = prevCards.map(card =>
-        card.id === updatedCard.id ? {...card, ...updatedCard} : card
-      );
-      return newCards;
-    });
-    onUpdateCard(column.id, updatedCard);
-  };
+  const handleUpdateCard = (updatedCard, deletedCardId) => {
+    if (deletedCardId) {
+        setCards(prevCards => prevCards.filter(card => card.id !== deletedCardId));
+        onDeleteCard(column.id, deletedCardId);
+    } else if (updatedCard) {
+        setCards(prevCards => {
+            const newCards = prevCards.map(card =>
+                card.id === updatedCard.id ? {...card, ...updatedCard} : card
+            );
+            return newCards;
+        });
+        onUpdateCard(column.id, updatedCard);
+    }
+};
 
   const handleDeleteCard = (cardId) => {
     setCards(cards.filter(card => card.id !== cardId));
