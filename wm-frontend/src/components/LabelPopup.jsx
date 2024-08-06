@@ -3,6 +3,7 @@ import axios from '../axios-config.js';
 import '../styles/LabelPopup.css';
 import ArrowDownIcon from '../assets/arrow_down_label.svg?react';
 import PlusIcon from '../assets/plus_icon_container.svg?react';
+import RemoveIcon from '../assets/remove_label_icon.svg?react';
 
 const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
     const [availableLabels, setAvailableLabels] = useState([]);
@@ -13,6 +14,7 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
     const colorDropdownRef = useRef(null);
     const labelPopupRef = useRef(null);
     const colorInputRef = useRef(null);
+    const inputRef = useRef(null);
 
     useEffect(() => {
         fetchAvailableLabels();
@@ -45,9 +47,6 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
     const handleAddLabel = async () => {
         if (labelInput.trim()) {
             try {
-                console.log('Label Name:', labelInput.trim());
-                console.log('Label Color:', selectedColor);
-    
                 const formData = new FormData();
                 formData.append('name', labelInput.trim());
                 formData.append('color', selectedColor);
@@ -57,8 +56,6 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-    
-                console.log('API Response:', response.data);
     
                 setAvailableLabels([...availableLabels, response.data]);
                 setLabelInput('');
@@ -73,16 +70,6 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
         }
     };
 
-    const handleLabelClick = (label, isAvailable) => {
-        if (isAvailable) {
-            if (!cardLabels.some(l => l.id === label.id)) {
-                setCardLabels([...cardLabels, label]);
-            }
-        } else {
-            setCardLabels(cardLabels.filter(l => l.id !== label.id));
-        }
-    };
-
     const handleColorSelect = (color) => {
         setSelectedColor(color);
         setIsColorDropdownOpen(false);
@@ -93,29 +80,45 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
         onClose();
     };
 
-    const createLabelElement = (label, isAvailable) => {
-        const defaultColor = '#cccccc';
-        const color = label.color || defaultColor;
-        
-        const rgb = hexToRgb(color);
-        const style = rgb ? {
-            backgroundColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
-            color: color
-        } : {
-            backgroundColor: 'rgba(204, 204, 204, 0.2)',
-            color: defaultColor
-        };
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
 
-        return (
-            <div key={label.id} className="card-label" style={style} onClick={() => handleLabelClick(label, isAvailable)}>
-                <div className="card-label-text">{label.name}</div>
-                <div className="remove-icon-wrapper">
-                    <svg className="remove-label-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                </div>
-            </div>
-        );
+    const handleAvailableLabelClick = (label) => {
+        if (!cardLabels.some(l => l.id === label.id)) {
+            setCardLabels(prevLabels => [...prevLabels, label]);
+        }
+    };
+    
+    const handleDeleteAvailableLabel = async (labelId, event) => {
+        event.stopPropagation();
+        try {
+            await axios.delete(`/api/labels/delete/${labelId}`);
+            
+            setAvailableLabels(prevLabels => {
+                const updatedLabels = prevLabels.filter(label => label.id !== labelId);
+                return updatedLabels;
+            });
+
+            setCardLabels(prevLabels => {
+                const updatedLabels = prevLabels.filter(label => label.id !== labelId);
+                return updatedLabels;
+            });
+
+        } catch (error) {
+            console.error('Error deleting label:', error);
+        }
+    };
+
+    const handleCardLabelClick = (label) => {
+        // If you need any action when clicking a card label
+    };
+    
+    const handleRemoveCardLabel = (labelId, event) => {
+        event.stopPropagation();
+        setCardLabels(prevLabels => prevLabels.filter(label => label.id !== labelId));
     };
 
     return (
@@ -132,6 +135,7 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
                             <div className="selection-frame">
                                 <div className="label-dynamic-input-frame">
                                     <input 
+                                        ref={inputRef}
                                         className="newlabel-input-container" 
                                         placeholder="Enter label name"
                                         value={labelInput}
@@ -149,7 +153,27 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
                                 </div>
                             </div>
                             <div className="available-labels-area">
-                                {availableLabels.map(label => createLabelElement(label, true))}
+                            {availableLabels.map(label => {
+                                const defaultColor = '#cccccc';
+                                const color = label.color || defaultColor;
+                                const rgb = hexToRgb(color);
+                                const style = rgb ? {
+                                    backgroundColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
+                                    color: color
+                                } : {
+                                    backgroundColor: 'rgba(204, 204, 204, 0.2)',
+                                    color: defaultColor
+                                };
+
+                                return (
+                                    <div key={label.id} className="card-label" style={style} onClick={() => handleAvailableLabelClick(label)}>
+                                        <div className="card-label-text">{label.name}</div>
+                                        <div className="remove-icon-wrapper" onClick={(e) => handleDeleteAvailableLabel(label.id, e)}>
+                                            <RemoveIcon className="remove-label-icon" stroke={color}/>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                             </div>
                         </div>
                     </div>
@@ -158,7 +182,27 @@ const LabelPopup = ({ onClose, onAddLabels, initialLabels = [] }) => {
                             <div className="input-label">Card labels</div>
                         </div>
                         <div className="card-labels-area">
-                            {cardLabels.map(label => createLabelElement(label, false))}
+                        {cardLabels.map(label => {
+                            const defaultColor = '#cccccc';
+                            const color = label.color || defaultColor;
+                            const rgb = hexToRgb(color);
+                            const style = rgb ? {
+                                backgroundColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
+                                color: color
+                            } : {
+                                backgroundColor: 'rgba(204, 204, 204, 0.2)',
+                                color: defaultColor
+                            };
+
+                            return (
+                                <div key={label.id} className="card-label" style={style} onClick={() => handleCardLabelClick(label)}>
+                                    <div className="card-label-text">{label.name}</div>
+                                    <div className="remove-icon-wrapper" onClick={(e) => handleRemoveCardLabel(label.id, e)}>
+                                        <RemoveIcon className="remove-label-icon" stroke={color}/>
+                                    </div>
+                                </div>
+                            );
+                        })}
                         </div>
                     </div>
                     <div className="add-labels-actions-section">
