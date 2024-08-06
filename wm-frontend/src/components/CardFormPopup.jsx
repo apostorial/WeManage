@@ -15,6 +15,7 @@ import GlobalIcon from '../assets/global.svg?react';
 import Calendar2Icon from '../assets/calendar_2.svg?react';
 import PlusLabelIcon from '../assets/plus_label.svg?react';
 import UploadIcon from '../assets/file_upload_icon.svg?react';
+import DeleteIcon from '../assets/delete_card.svg?react';
 import DatePicker from 'react-datepicker';
 import { format, parseISO, addHours, subHours } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -60,7 +61,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
-
+    
         if (cardName.trim()) {
             setError(null);
             try {
@@ -76,26 +77,46 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                     params.append('meeting', format(addHours(cardMeetingDate, 1), "yyyy-MM-dd'T'HH:mm:ssXXX"));
                 }
                 labelIds.forEach(id => params.append('labelIds', id));
-
+    
                 const config = {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 };
-
+    
                 let response;
                 if (isEditMode) {
                     response = await axios.put(`/api/cards/update/${editCard.id}`, params, config);
                 } else {
                     response = await axios.post('/api/cards/create', params, config);
                 }
-
-                onSubmit(response.data.card);
-                onClose();
+    
+                if (response.data && response.data.id) {
+                    onSubmit(response.data);
+                    onClose();
+                } else {
+                    throw new Error('Server response did not include a card with an id');
+                }
             } catch (err) {
                 setError(`Failed to ${isEditMode ? 'update' : 'create'} card. Please try again.`);
                 console.error(`Error ${isEditMode ? 'updating' : 'creating'} card:`, err);
             }
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!editCard || !editCard.id) {
+            console.error('No card to delete');
+            return;
+        }
+    
+        try {
+            await axios.delete(`/api/cards/delete/${editCard.id}`);
+            onClose();
+            onSubmit(null, editCard.id);
+        } catch (err) {
+            console.error('Error deleting card:', err);
+            setError('Failed to delete card. Please try again.');
         }
     };
 
@@ -312,7 +333,16 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 </div>
             </div>
             <div className="new-card-popup-footer">
-                <div className="new-card-popup-actions">
+                <div className={`new-card-popup-actions ${!isEditMode ? 'add-mode' : ''}`}>
+                {isEditMode && (
+                    <div className="delete-card-popup-button" onClick={handleDelete}>
+                        <div className="delete-card-button-base">
+                            <DeleteIcon />
+                            <div className="delete-card-button-label">Delete card</div>
+                        </div>
+                    </div>
+                    )}
+
                     <div className="new-card-popup-buttons">
                         <div className="new-card-popup-cancel-button">
                             <div className="button-base" onClick={onClose}>
