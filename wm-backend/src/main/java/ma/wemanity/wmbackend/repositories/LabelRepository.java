@@ -1,6 +1,5 @@
 package ma.wemanity.wmbackend.repositories;
 
-import ma.wemanity.wmbackend.entities.Board;
 import ma.wemanity.wmbackend.entities.Label;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
