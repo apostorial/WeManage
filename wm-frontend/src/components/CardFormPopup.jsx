@@ -20,6 +20,7 @@ import DatePicker from 'react-datepicker';
 import { format, parseISO, addHours, subHours } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/custom-datepicker.css';
+import LabelPopup from './LabelPopup';
 
 const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
     const [cardName, setCardName] = useState('');
@@ -34,6 +35,8 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
     const isEditMode = !!editCard;
     const popupRef = useRef(null);
     const inputRef = useRef(null);
+    const [showLabelPopup, setShowLabelPopup] = useState(false);
+    const [cardLabels, setCardLabels] = useState([]);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -56,8 +59,14 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
             } else {
                 setCardMeetingDate(null);
             }
+            setCardLabels(editCard.labels || []);
         }
     }, [editCard]);
+
+    const handleAddLabels = (labels) => {
+        setCardLabels(labels);
+        setShowLabelPopup(false);
+    };
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
@@ -76,7 +85,9 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 if (cardMeetingDate) {
                     params.append('meeting', format(addHours(cardMeetingDate, 1), "yyyy-MM-dd'T'HH:mm:ssXXX"));
                 }
-                labelIds.forEach(id => params.append('labelIds', id));
+                cardLabels.forEach(label => {
+                    params.append('labelIds[]', label.id);
+                });
     
                 const config = {
                     headers: {
@@ -87,15 +98,33 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 let response;
                 if (isEditMode) {
                     response = await axios.put(`/api/cards/update/${editCard.id}`, params, config);
+                    
+                    if (response.data) {
+                        const updatedCard = {
+                            ...editCard,
+                            name: cardName.trim(),
+                            company: cardCompany.trim(),
+                            position: cardPosition.trim(),
+                            email: cardEmail.trim(),
+                            number: cardNumber.trim(),
+                            website: cardWebsite.trim(),
+                            meeting: cardMeetingDate ? format(addHours(cardMeetingDate, 1), "yyyy-MM-dd'T'HH:mm:ssXXX") : null,
+                            labels: cardLabels
+                        };
+                        onSubmit(updatedCard);
+                        onClose();
+                    } else {
+                        throw new Error('Update operation failed');
+                    }
                 } else {
                     response = await axios.post('/api/cards/create', params, config);
-                }
-    
-                if (response.data && response.data.id) {
-                    onSubmit(response.data);
-                    onClose();
-                } else {
-                    throw new Error('Server response did not include a card with an id');
+                    
+                    if (response.data && response.data.id) {
+                        onSubmit(response.data);
+                        onClose();
+                    } else {
+                        throw new Error('Server response did not include a card with an id');
+                    }
                 }
             } catch (err) {
                 setError(`Failed to ${isEditMode ? 'update' : 'create'} card. Please try again.`);
@@ -301,7 +330,12 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                             <div className="supporting-text1">Labels help organize your cards.</div>
                         </div>
                         <div className="card-popup-labels-container">
-                        <div className="card-popup-add-label-button">
+                        {cardLabels.map(label => (
+                                <div key={label.name} className="card-label" style={{backgroundColor: label.color}}>
+                                    {label.name}
+                                </div>
+                        ))}
+                        <div className="card-popup-add-label-button" onClick={() => setShowLabelPopup(true)}>
                             <PlusLabelIcon className="plus-icon" />
                             </div>
                         </div>
@@ -361,6 +395,13 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 </div>
             </div>
         </div>
+        {showLabelPopup && (
+                <LabelPopup 
+                    onClose={() => setShowLabelPopup(false)}
+                    onAddLabels={handleAddLabels}
+                    initialLabels={cardLabels}
+                />
+            )}
     </div>
     );
   };
