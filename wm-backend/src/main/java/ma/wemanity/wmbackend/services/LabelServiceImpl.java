@@ -6,17 +6,22 @@ import ma.wemanity.wmbackend.exceptions.LabelNotFoundException;
 import ma.wemanity.wmbackend.exceptions.ServiceException;
 import ma.wemanity.wmbackend.repositories.CardRepository;
 import ma.wemanity.wmbackend.repositories.LabelRepository;
+import ma.wemanity.wmbackend.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service @AllArgsConstructor
 public class LabelServiceImpl implements LabelService {
     private final LabelRepository labelRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Label getLabel(String id) throws ServiceException {
@@ -34,12 +39,16 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public Label createLabel(String name, String color) throws ServiceException {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+            String email = principal.getAttribute("email");
+            User authenticatedUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
             Label label = new Label();
             label.setName(name);
-            if (color == null || color.isEmpty()) {
-                color = generateRandomColor();
-            }
             label.setColor(color);
+            label.setOwner(authenticatedUser);
             return labelRepository.save(label);
         } catch (Exception e) {
             throw new ServiceException("Error while creating label", e);
@@ -56,9 +65,6 @@ public class LabelServiceImpl implements LabelService {
             Label label = optionalLabel.get();
 
             label.setName(name);
-            if (color == null || color.isEmpty()) {
-                color = generateRandomColor();
-            }
             label.setColor(color);
             return labelRepository.save(label);
         } catch (Exception e) {
@@ -94,11 +100,16 @@ public class LabelServiceImpl implements LabelService {
         }
     }
 
-    private String generateRandomColor() {
-        Random random = new Random();
-        int hue = random.nextInt(360);
-        int saturation = 80;
-        int lightness = 40;
-        return String.format("hsl(%d, %d%%, %d%%)", hue, saturation, lightness);
+    @Override
+    public List<Label> getLabelsByAuthenticatedUser() throws ServiceException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+        String email = principal.getAttribute("email");
+        User authenticatedUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException("Authenticated user not found"));
+
+        User user = userRepository.findById(authenticatedUser.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + authenticatedUser.getId()));
+        return labelRepository.findByOwnerId(user.getId());
     }
 }
