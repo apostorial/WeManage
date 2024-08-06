@@ -11,6 +11,10 @@
     z-index: 1000;
 }
 
+.card-label {
+    font-size: 13px;
+}
+
 .card-icon1 {
     width: 24px;
     position: relative;
@@ -267,6 +271,7 @@
     flex-wrap: wrap;
     align-items: flex-start;
     justify-content: flex-start;
+    gap:6px;
 }
 .add-labels {
     width: 326px;

@@ -16,6 +16,7 @@ import Calendar2Icon from '../assets/calendar_2.svg?react';
 import PlusLabelIcon from '../assets/plus_label.svg?react';
 import UploadIcon from '../assets/file_upload_icon.svg?react';
 import DeleteIcon from '../assets/delete_card.svg?react';
+import RemoveIcon from '../assets/remove_label_icon.svg?react';
 import DatePicker from 'react-datepicker';
 import { format, parseISO, addHours, subHours } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -120,7 +121,11 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                     response = await axios.post('/api/cards/create', params, config);
                     
                     if (response.data && response.data.id) {
-                        onSubmit(response.data);
+                        const newCard = {
+                            ...response.data,
+                            labels: cardLabels
+                        };
+                        onSubmit(newCard);
                         onClose();
                     } else {
                         throw new Error('Server response did not include a card with an id');
@@ -331,8 +336,11 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                         </div>
                         <div className="card-popup-labels-container">
                         {cardLabels.map(label => (
-                                <div key={label.name} className="card-label" style={{backgroundColor: label.color}}>
-                                    {label.name}
+                                <div key={label.id} className="card-label" style={{backgroundColor: `${label.color}33`,}}>
+                                    <div className='card-label-text' style={{color: label.color}}>
+                                        {label.name}
+                                    </div>
+                                    <RemoveIcon className="remove-label-icon" stroke={label.color}/>
                                 </div>
                         ))}
                         <div className="card-popup-add-label-button" onClick={() => setShowLabelPopup(true)}>
