@@ -138,26 +138,30 @@
 
 .google-button {
 	width: 100%;
-	padding: 15px;
+	padding: 12px;
 	margin-top: 20px;
-	background-color: #4285F4;
+	background-color: #ebf7fb;
 	color: white;
-	border: none;
-	border-radius: 4px;
+	border: 1px solid #454545;
+	border-radius: 8px;
 	cursor: pointer;
 	font-size: 16px;
 	font-weight: bold;
-	transition: background-color 0.3s ease;
+	color: #1a1a1a;
+	transition: background-color 0.5s ease;
   }
-  
+
   .google-button:hover {
-	background-color: #357AE8;
+	background-color: #3e43fb;
+	color: #ebf7fb;
   }
   
   .google-button .login-label {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	font-family: 'Work Sans';
+	font-weight: 600;
   }
   
   .google-button .login-label::before {
@@ -167,5 +171,5 @@
 	background-repeat: no-repeat;
 	width: 18px;
 	height: 18px;
-	margin-right: 10px;
+	margin-right: 12px;
   }
