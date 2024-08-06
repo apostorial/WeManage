@@ -25,6 +25,16 @@ public class LabelRestController {
         }
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<Label>> listLabels() {
+        try {
+            List<Label> labels = labelService.getLabelsByAuthenticatedUser();
+            return new ResponseEntity<>(labels, HttpStatus.OK);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Label> createLabel(@RequestParam(name = "name") String name,
                                            @RequestParam(name = "color", required = false) String color) {
