@@ -28,6 +28,7 @@ public class Card {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String meeting;
+    private String meetingLink;
     @DBRef
     private Set<Comment> comments = new HashSet<>();
     @DBRef
