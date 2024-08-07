@@ -56,20 +56,28 @@ public class CardRestController {
             @RequestParam(value = "number", required = false) String number,
             @RequestParam(value = "website", required = false) String website,
             @RequestParam(value = "meeting", required = false) String meeting,
-            @RequestParam(value = "labelIds", required = false) Set<String> labelIds) {
-
+            @RequestParam(value = "labelIds", required = false) Set<String> labelIds,
+            @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
         try {
             Card card = cardService.createCard(columnId, name, company, position, email, number, website, meeting, labelIds);
-            return new ResponseEntity<>(card, HttpStatus.CREATED);
+
+            if (meeting != null && !meeting.isEmpty()) {
+                String eventLink = createCalendarEvent(authorizedClient, meeting, card.getId());
+                card.setMeetingLink(eventLink);
+                cardRepository.save(card);
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("card", card, "eventLink", eventLink));
+            } else {
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("card", card));
+            }
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>("Invalid input: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>("Error creating card: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.badRequest().body("Invalid input: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating card: " + e.getMessage());
         }
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCardAndCreateEvent(
+    public ResponseEntity<?> updateCard(
             @PathVariable String id,
             @RequestParam String name,
             @RequestParam String company,
@@ -94,6 +102,8 @@ public class CardRestController {
             Card updatedCard = cardService.updateCard(id, name, company, position, email, number, website, meeting, labelIds);
             if (meetingChanged) {
                 String eventLink = createCalendarEvent(authorizedClient, meeting, id);
+                updatedCard.setMeetingLink(eventLink);
+                cardRepository.save(updatedCard);
                 return ResponseEntity.ok(Map.of("card", updatedCard, "eventLink", eventLink));
             } else {
                 return ResponseEntity.ok(Map.of("card", updatedCard));
