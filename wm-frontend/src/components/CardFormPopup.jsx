@@ -119,10 +119,9 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                     }
                 } else {
                     response = await axios.post('/api/cards/create', params, config);
-                    
-                    if (response.data && response.data.id) {
+                    if (response.data && response.data.card.id) {
                         const newCard = {
-                            ...response.data,
+                            ...response.data.card,
                             labels: cardLabels
                         };
                         onSubmit(newCard);
