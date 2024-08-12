@@ -37,12 +37,12 @@ public class Card {
     private Set<Label> labels = new LinkedHashSet<>();
     private ObjectId file;
 
-    @JsonProperty("comments")
-    public List<String> getCommentsForSerialization() {
-        return comments.stream()
-                .map(Comment::getId)
-                .collect(Collectors.toList());
-    }
+//    @JsonProperty("comments")
+//    public List<String> getCommentsForSerialization() {
+//        return comments.stream()
+//                .map(Comment::getId)
+//                .collect(Collectors.toList());
+//    }
 
     @JsonProperty("column")
     public String getColumnForSerialization() {
