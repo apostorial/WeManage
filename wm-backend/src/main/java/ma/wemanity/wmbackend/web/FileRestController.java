@@ -11,8 +11,10 @@ import ma.wemanity.wmbackend.services.CardService;
 import ma.wemanity.wmbackend.services.FileService;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
+import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,8 +69,8 @@ public class FileRestController {
                 .body(IOUtils.toByteArray(resource.getInputStream()));
     }
 
-    @GetMapping("/card/{cardId}")
-    public ResponseEntity<byte[]> getCardFile(@PathVariable String cardId) throws IOException {
+    @GetMapping("download/card/{cardId}")
+    public ResponseEntity<Resource> getCardFile(@PathVariable String cardId) throws IOException {
         try {
             Card card = cardService.getCard(cardId);
             if (card.getFile() == null) {
@@ -81,9 +83,31 @@ public class FileRestController {
             }
 
             GridFsResource resource = gridFsTemplate.getResource(file);
+            assert file.getMetadata() != null;
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(resource.getContentType()))
-                    .body(IOUtils.toByteArray(resource.getInputStream()));
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                    .contentType(MediaType.parseMediaType(file.getMetadata().get("_contentType").toString()))
+                    .contentLength(file.getLength())
+                    .body(resource);
+        } catch (ServiceException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/card/{cardId}/filename")
+    public ResponseEntity<String> getCardFilename(@PathVariable String cardId) {
+        try {
+            Card card = cardService.getCard(cardId);
+            if (card.getFile() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            GridFSFile file = fileService.getFile(card.getFile());
+            if (file == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(file.getFilename());
         } catch (ServiceException e) {
             return ResponseEntity.notFound().build();
         }
