@@ -9,14 +9,16 @@ import divider from '../assets/divider.svg'
 import EmptyState from '../assets/empty_state.svg?react';
 import AddIcon from '../assets/add.svg?react';
 import DeleteAlert from './DeleteAlert';
+import CardSheet from './CardSheet';
 
-const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard, onDeleteCard}) => {
+const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard, onDeleteCard}) => {
   const [columnName, setColumnName] = useState(column.name);
   const [isAddCardPopupOpen, setIsAddCardPopupOpen] = useState(false);
   const [isEditCardPopupOpen, setIsEditCardPopupOpen] = useState(false);
   const [cardToEdit, setCardToEdit] = useState(null);
   const [cards, setCards] = useState(column.cards || []);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   useEffect(() => {
     setColumnName(column.name);
@@ -40,9 +42,18 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
   setIsAddCardPopupOpen(false);
   };
 
+  const openCardSheet = (card) => {
+    setSelectedCard(card);
+  };
+
+  const closeCardSheet = () => {
+    setSelectedCard(null);
+  };
+
   const editCard = (card) => {
     setCardToEdit(card);
     setIsEditCardPopupOpen(true);
+    closeCardSheet();
   };
   
   const closeEditCardPopup = () => {
@@ -66,7 +77,9 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
 };
 
   const handleDeleteCard = (cardId) => {
-    setCards(cards.filter(card => card.id !== cardId));
+    setCards(prevCards => prevCards.filter(card => card.id !== cardId));
+    onDeleteCard(column.id, cardId);
+    closeCardSheet();
   };
 
   const handleDeleteClick = () => {
@@ -136,8 +149,9 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
                       <Card
                         key={card.id}
                         card={card}
-                        onDeleteCard={handleDeleteCard}
-                        onEditCard={editCard}
+                        onClick={() => openCardSheet(card)}
+                        // onDeleteCard={handleDeleteCard}
+                        // onEditCard={editCard}
                       />
                     </div>
                   )}
@@ -160,6 +174,15 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
           onSubmit={isAddCardPopupOpen ? handleAddCard : handleUpdateCard}
           columnId={column.id}
           editCard={cardToEdit}
+        />
+      )}
+
+      {selectedCard && (
+        <CardSheet
+          card={selectedCard}
+          onClose={closeCardSheet}
+          onDelete={handleDeleteCard}
+          onEdit={() => editCard(selectedCard)}
         />
       )}
 
