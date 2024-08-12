@@ -8,6 +8,7 @@ import deleteIcon from '../assets/delete.svg'
 import divider from '../assets/divider.svg'
 import EmptyState from '../assets/empty_state.svg?react';
 import AddIcon from '../assets/add.svg?react';
+import DeleteAlert from './DeleteAlert';
 
 const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard, onDeleteCard}) => {
   const [columnName, setColumnName] = useState(column.name);
@@ -15,6 +16,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
   const [isEditCardPopupOpen, setIsEditCardPopupOpen] = useState(false);
   const [cardToEdit, setCardToEdit] = useState(null);
   const [cards, setCards] = useState(column.cards || []);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   useEffect(() => {
     setColumnName(column.name);
@@ -67,13 +69,22 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
     setCards(cards.filter(card => card.id !== cardId));
   };
 
-  const handleDeleteColumn = async () => {
+  const handleDeleteClick = () => {
+    setShowDeleteAlert(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteAlert(false);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
       await axios.delete(`/api/columns/delete/${column.id}`);
       onDeleteColumn(column.id);
     } catch (error) {
       console.error('Error deleting column:', error);
     }
+    setShowDeleteAlert(false);
   };
 
   const handleKeyDown = (e) => {
@@ -97,7 +108,7 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
           <path d="M4 8H12" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M8 12V4" stroke="#EBF7FB" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-          <img src={deleteIcon} alt="Delete Icon" className="delete-icon" onClick={handleDeleteColumn}/>
+          <img src={deleteIcon} alt="Delete Icon" className="delete-icon" onClick={handleDeleteClick}/>
         </div>
       </div>
       <img src={divider} alt="Divider" className="header-divider" />
@@ -150,6 +161,14 @@ const Column = ({ column, onColumnNameUpdate, onDeleteColumn, onEditColumn, onAd
           columnId={column.id}
           editCard={cardToEdit}
         />
+      )}
+
+      {showDeleteAlert && (
+            <DeleteAlert 
+                onCancel={handleCancelDelete}
+                onDelete={handleConfirmDelete}
+                itemName="list"
+            />
       )}
     </div>
   );
