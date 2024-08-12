@@ -154,13 +154,13 @@ const Board = ({ board, onBoardNameUpdate }) => {
 };
 
 const handleDeleteCard = (columnId, cardId) => {
-    setColumns(prevColumns =>
-        prevColumns.map(col =>
-            col.id === columnId
-                ? { ...col, cards: col.cards.filter(card => card.id !== cardId) }
-                : col
-        )
-    );
+  setColumns(prevColumns =>
+      prevColumns.map(col =>
+          col.id === columnId
+              ? { ...col, cards: col.cards.filter(card => card.id !== cardId) }
+              : col
+      )
+  );
 };
 
   const onDragEnd = async (result) => {
@@ -313,15 +313,15 @@ const handleDeleteCard = (columnId, cardId) => {
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                       <Column
-                        key={column.id}
-                        column={column}
-                        onColumnNameUpdate={handleColumnNameUpdate}
-                        onDeleteColumn={handleDeleteColumn}
-                        onAddCard={handleAddCard}
-                        onUpdateCard={handleUpdateCard}
-                        onDeleteCard={handleDeleteCard}
-                        onEditColumn={editColumn}
-                      />
+                            key={column.id}
+                            column={column}
+                            onColumnNameUpdate={handleColumnNameUpdate}
+                            onDeleteColumn={handleDeleteColumn}
+                            onAddCard={handleAddCard}
+                            onUpdateCard={handleUpdateCard}
+                            onDeleteCard={handleDeleteCard}
+                            onEditColumn={editColumn}
+                        />
                     </div>
                   )}
                 </Draggable>
