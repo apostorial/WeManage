@@ -22,6 +22,7 @@ import { format, parseISO, addHours, subHours } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/custom-datepicker.css';
 import LabelPopup from './LabelPopup';
+import DeleteAlert from './DeleteAlert';
 
 const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
     const [cardName, setCardName] = useState('');
@@ -38,6 +39,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
     const inputRef = useRef(null);
     const [showLabelPopup, setShowLabelPopup] = useState(false);
     const [cardLabels, setCardLabels] = useState([]);
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -137,12 +139,20 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
         }
     };
 
-    const handleDelete = async () => {
+    const handleDeleteClick = () => {
+        setShowDeleteAlert(true);
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteAlert(false);
+    };
+
+    const handleConfirmDelete = async () => {
         if (!editCard || !editCard.id) {
             console.error('No card to delete');
             return;
         }
-    
+
         try {
             await axios.delete(`/api/cards/delete/${editCard.id}`);
             onClose();
@@ -151,6 +161,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
             console.error('Error deleting card:', err);
             setError('Failed to delete card. Please try again.');
         }
+        setShowDeleteAlert(false);
     };
 
     useEffect(() => {
@@ -376,7 +387,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
             <div className="new-card-popup-footer">
                 <div className={`new-card-popup-actions ${!isEditMode ? 'add-mode' : ''}`}>
                 {isEditMode && (
-                    <div className="delete-card-popup-button" onClick={handleDelete}>
+                    <div className="delete-card-popup-button" onClick={handleDeleteClick}>
                         <div className="delete-card-button-base">
                             <DeleteIcon />
                             <div className="delete-card-button-label">Delete card</div>
@@ -408,7 +419,14 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                     onAddLabels={handleAddLabels}
                     initialLabels={cardLabels}
                 />
-            )}
+        )}
+        {showDeleteAlert && (
+            <DeleteAlert 
+                onCancel={handleCancelDelete}
+                onDelete={handleConfirmDelete}
+                itemName="card"
+            />
+        )}
     </div>
     );
   };
