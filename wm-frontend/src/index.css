@@ -3,6 +3,9 @@ body {
   line-height: normal;
 }
 
+a:-webkit-any-link {
+  text-decoration-color: #ebf7fb;
+}
 
 .main {
   width: 100%;
