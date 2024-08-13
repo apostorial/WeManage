@@ -24,6 +24,21 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState(card.comments || []);
     const [fileDetails, setFileDetails] = useState(null);
+    const sheetRef = useRef(null);
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (sheetRef.current && !sheetRef.current.contains(event.target)) {
+                onClose();
+            }
+        };
+    
+        document.addEventListener('mousedown', handleOutsideClick);
+    
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, [onClose]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -163,7 +178,7 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
 
     return (
         <div className="sheet-main-container">
-            <div className="sheet-container">
+            <div className="sheet-container" ref={sheetRef}>
                 <div className="sheet-header-container">
                     <div className="sheet-header">
                         <div className="sheet-header-card-icon-container">
