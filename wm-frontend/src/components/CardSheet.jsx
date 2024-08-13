@@ -26,6 +26,10 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
     const [fileDetails, setFileDetails] = useState(null);
     const sheetRef = useRef(null);
 
+    const sortComments = (commentsToSort) => {
+        return [...commentsToSort].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    };
+
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (sheetRef.current && !sheetRef.current.contains(event.target)) {
@@ -104,7 +108,8 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
             });
 
             if (response.data) {
-                setComments([...comments, response.data]);
+                const updatedComments = sortComments([...comments, response.data]);
+                setComments(updatedComments);
                 setNewComment('');
             }
         } catch (error) {
@@ -303,7 +308,7 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
                         </div>
                     </div>
                     <div className="sheet-body-comment-container">
-                        {comments.map((comment, index) => (
+                        {sortComments(comments).map((comment, index) => (
                             <div key={index} className="sheet-body-comment-item-contai">
                                 <div className="sheet-body-comment-item-header">
                                     <div className="sheet-body-comment-item-nested">
