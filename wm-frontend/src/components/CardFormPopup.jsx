@@ -190,6 +190,10 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
         }
     }, []);
 
+    const handleRemoveLabel = (labelId) => {
+        setCardLabels(prevLabels => prevLabels.filter(label => label.id !== labelId));
+    };
+
     return (
         <div className="overlay" id="newListOverlay" ref={popupRef} tabIndex='0'>
         <div className='new-card-popup'>
@@ -350,7 +354,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                                     <div className='card-label-text' style={{color: label.color}}>
                                         {label.name}
                                     </div>
-                                    <RemoveIcon className="remove-label-icon" stroke={label.color}/>
+                                    <RemoveIcon className="remove-label-icon" stroke={label.color} onClick={() => handleRemoveLabel(label.id)}/>
                                 </div>
                         ))}
                         <div className="card-popup-add-label-button" onClick={() => setShowLabelPopup(true)}>
