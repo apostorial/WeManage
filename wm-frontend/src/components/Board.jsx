@@ -13,7 +13,6 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [isEditingBoardName, setIsEditingBoardName] = useState(false);
   const [isBoardNameFocused, setIsBoardNameFocused] = useState(false);
   const [boardName, setBoardName] = useState(board.name);
-  const [color, setColor] = useState('#ffffff');
   const [isAddColumnPopupOpen, setIsAddColumnPopupOpen] = useState(false);
   const [isEditColumnPopupOpen, setIsEditColumnPopupOpen] = useState(false);
   const [columnToEdit, setColumnToEdit] = useState(null);

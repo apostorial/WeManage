@@ -100,12 +100,6 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
     setShowDeleteAlert(false);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleAddCard(e);
-    }
-  };
-
   return (
     <div className="to-do-list">
       <div className="todo-header">
