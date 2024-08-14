@@ -16,6 +16,7 @@ const Board = ({ board, onBoardNameUpdate }) => {
   const [isAddColumnPopupOpen, setIsAddColumnPopupOpen] = useState(false);
   const [isEditColumnPopupOpen, setIsEditColumnPopupOpen] = useState(false);
   const [columnToEdit, setColumnToEdit] = useState(null);
+  const [isDragDisabled, setIsDragDisabled] = useState(false);
 
   useEffect(() => {
     setBoardName(board.name);
@@ -24,6 +25,10 @@ const Board = ({ board, onBoardNameUpdate }) => {
   useEffect(() => {
     fetchColumns();
   }, [board.id]);
+
+  useEffect(() => {
+    setIsDragDisabled(isAddColumnPopupOpen || isEditColumnPopupOpen);
+  }, [isAddColumnPopupOpen, isEditColumnPopupOpen]);
 
   const fetchColumns = async () => {
     try {
@@ -308,7 +313,7 @@ const handleDeleteCard = (columnId, cardId) => {
               columnsContainerRef.current = el;
             }}  className="columns-container">
               {columns.map((column, index) => (
-                <Draggable key={column.id} draggableId={column.id} index={index}>
+                <Draggable key={column.id} draggableId={column.id} index={index} isDragDisabled={isDragDisabled}>
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                       <Column
@@ -320,6 +325,7 @@ const handleDeleteCard = (columnId, cardId) => {
                             onUpdateCard={handleUpdateCard}
                             onDeleteCard={handleDeleteCard}
                             onEditColumn={editColumn}
+                            setIsDragDisabled={setIsDragDisabled}
                         />
                     </div>
                   )}

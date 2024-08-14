@@ -11,7 +11,7 @@ import AddIcon from '../assets/add.svg?react';
 import DeleteAlert from './DeleteAlert';
 import CardSheet from './CardSheet';
 
-const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard, onDeleteCard}) => {
+const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard, onDeleteCard, setIsDragDisabled}) => {
   const [columnName, setColumnName] = useState(column.name);
   const [isAddCardPopupOpen, setIsAddCardPopupOpen] = useState(false);
   const [isEditCardPopupOpen, setIsEditCardPopupOpen] = useState(false);
@@ -27,6 +27,7 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
 
   const addCard = () => {
     setIsAddCardPopupOpen(true);
+    setIsDragDisabled(true);
   };
 
   const handleAddCard = (newCard) => {
@@ -40,24 +41,29 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
 
   const closeAddCardPopup = () => {
   setIsAddCardPopupOpen(false);
+  setIsDragDisabled(true);
   };
 
   const openCardSheet = (card) => {
     setSelectedCard(card);
+    setIsDragDisabled(true);
   };
 
   const closeCardSheet = () => {
     setSelectedCard(null);
+    setIsDragDisabled(true);
   };
 
   const editCard = (card) => {
     setCardToEdit(card);
     setIsEditCardPopupOpen(true);
+    setIsDragDisabled(true);
     closeCardSheet();
   };
   
   const closeEditCardPopup = () => {
     setIsEditCardPopupOpen(false);
+    setIsDragDisabled(true);
     setCardToEdit(null);
   };
 
