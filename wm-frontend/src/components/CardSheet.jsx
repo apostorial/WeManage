@@ -25,6 +25,7 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
     const [comments, setComments] = useState(card.comments || []);
     const [fileDetails, setFileDetails] = useState(null);
     const sheetRef = useRef(null);
+    const deleteAlertRef = useRef(null);
 
     const sortComments = (commentsToSort) => {
         return [...commentsToSort].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -32,7 +33,9 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
-            if (sheetRef.current && !sheetRef.current.contains(event.target)) {
+            if (sheetRef.current && !sheetRef.current.contains(event.target) &&
+                deleteAlertRef.current && !deleteAlertRef.current.contains(event.target) &&
+                !showDeleteAlert) {
                 onClose();
             }
         };
@@ -42,7 +45,7 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
-    }, [onClose]);
+    }, [onClose, showDeleteAlert]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -351,11 +354,13 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
                 </div>
             </div>
         {showDeleteAlert && (
-            <DeleteAlert 
-                onCancel={handleCancelDelete}
-                onDelete={handleConfirmDelete}
-                itemName="card"
-            />
+            <div ref={deleteAlertRef}>
+                <DeleteAlert 
+                    onCancel={handleCancelDelete}
+                    onDelete={handleConfirmDelete}
+                    itemName="card"
+                />
+            </div>
         )}
         </div>
     );
