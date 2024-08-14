@@ -83,6 +83,7 @@
     align-items: center;
     justify-content: center;
     padding: 10px 18px;
+    cursor: pointer;
 }
 .alert-actions-button1 {
     flex: 1;
@@ -96,6 +97,7 @@
     justify-content: center;
     padding: 10px 18px;
     color: #ebf7fb;
+    cursor: pointer;
 }
 .alert-actions {
     align-self: stretch;
