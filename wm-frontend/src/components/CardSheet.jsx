@@ -33,10 +33,14 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
-            if (sheetRef.current && !sheetRef.current.contains(event.target) &&
-                deleteAlertRef.current && !deleteAlertRef.current.contains(event.target) &&
-                !showDeleteAlert) {
-                onClose();
+            if (sheetRef.current && !sheetRef.current.contains(event.target)) {
+                if (showDeleteAlert) {
+                    if (deleteAlertRef.current && !deleteAlertRef.current.contains(event.target)) {
+                        setShowDeleteAlert(false);
+                    }
+                } else {
+                    onClose();
+                }
             }
         };
     
