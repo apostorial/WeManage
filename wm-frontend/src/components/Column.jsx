@@ -41,7 +41,7 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
 
   const closeAddCardPopup = () => {
   setIsAddCardPopupOpen(false);
-  setIsDragDisabled(true);
+  setIsDragDisabled(false);
   };
 
   const openCardSheet = (card) => {
@@ -51,7 +51,7 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
 
   const closeCardSheet = () => {
     setSelectedCard(null);
-    setIsDragDisabled(true);
+    setIsDragDisabled(false);
   };
 
   const editCard = (card) => {
@@ -63,7 +63,7 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
   
   const closeEditCardPopup = () => {
     setIsEditCardPopupOpen(false);
-    setIsDragDisabled(true);
+    setIsDragDisabled(false);
     setCardToEdit(null);
   };
 
