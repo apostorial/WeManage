@@ -112,18 +112,4 @@ public class FileRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @GetMapping("/card/{cardId}/fileId")
-    public ResponseEntity<String> getCardFileId(@PathVariable String cardId) {
-        try {
-            Card card = cardService.getCard(cardId);
-            if (card.getFile() == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(card.getFile().toString());
-        } catch (ServiceException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving card file ID");
-        }
-    }
 }
