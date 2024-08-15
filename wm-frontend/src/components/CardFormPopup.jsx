@@ -40,6 +40,9 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null, setIsDrag
     const [showLabelPopup, setShowLabelPopup] = useState(false);
     const [cardLabels, setCardLabels] = useState([]);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileName, setFileName] = useState('');
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -69,8 +72,42 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null, setIsDrag
                 setCardMeetingDate(null);
             }
             setCardLabels(editCard.labels || []);
+            fetchFileName(editCard.id);
         }
     }, [editCard]);
+
+    const fetchFileName = async (cardId) => {
+        try {
+            const response = await axios.get(`/api/files/card/${cardId}/filename`);
+            setFileName(response.data);
+        } catch (error) {
+            console.error('Error fetching file name:', error);
+        }
+    };
+
+    const handleFileSelect = (event) => {
+        setSelectedFile(event.target.files[0]);
+        setFileName(event.target.files[0].name);
+    };
+
+    const handleUpload = async () => {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            await axios.post(`/api/files/card/${editCard.id}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            // You might want to update the UI or state here to reflect the successful upload
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            // Handle the error (e.g., show an error message to the user)
+        }
+    };
 
     const handleAddLabels = (labels) => {
         setCardLabels(labels);
@@ -137,6 +174,10 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null, setIsDrag
                     } else {
                         throw new Error('Server response did not include a card with an id');
                     }
+                }
+
+                if (selectedFile) {
+                    await handleUpload();
                 }
             } catch (err) {
                 setError(`Failed to ${isEditMode ? 'update' : 'create'} card. Please try again.`);
@@ -386,14 +427,20 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null, setIsDrag
                                     <UploadIcon className="file-upload-icon" />
                                     <div className="text-and-supporting-text3">
                                         <div className="action">
-                                            <div className="upload-button">
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                style={{ display: 'none' }}
+                                                onChange={handleFileSelect}
+                                            />
+                                            <div className="upload-button" onClick={() => fileInputRef.current.click()}>
                                                 <div className="upload-button-base">
                                                     <div className="click-to-upload">Click to upload</div>
                                                 </div>
                                             </div>
                                             <div className="text11">or drag and drop</div>
                                         </div>
-                                        <div className="supporting-text3">PDF, DOC, XLS, PNG or ZIP</div>
+                                        <div className="supporting-text3">{fileName ? `Selected file: ${fileName}` : 'PDF, DOC, XLS, PNG or ZIP'}</div>
                                     </div>
                                 </div>
                             </div>
