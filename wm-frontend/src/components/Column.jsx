@@ -174,6 +174,7 @@ const Column = ({ column, onDeleteColumn, onEditColumn, onAddCard, onUpdateCard,
           onSubmit={isAddCardPopupOpen ? handleAddCard : handleUpdateCard}
           columnId={column.id}
           editCard={cardToEdit}
+          setIsDragDisabled={setIsDragDisabled}
         />
       )}
 

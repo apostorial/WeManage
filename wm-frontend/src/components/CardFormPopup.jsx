@@ -24,7 +24,7 @@ import '../styles/custom-datepicker.css';
 import LabelPopup from './LabelPopup';
 import DeleteAlert from './DeleteAlert';
 
-const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
+const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null, setIsDragDisabled }) => {
     const [cardName, setCardName] = useState('');
     const [cardCompany, setCardCompany] = useState('');
     const [cardPosition, setCardPosition] = useState('');
@@ -43,10 +43,16 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
+        if (setIsDragDisabled) {
+            setIsDragDisabled(true);
+        }
         return () => {
             document.body.style.overflow = 'unset';
+            if (setIsDragDisabled) {
+                setIsDragDisabled(false);
+            }
         };
-    }, []);
+    }, [setIsDragDisabled]);
 
     useEffect(() => {
         if (isEditMode) {
@@ -194,6 +200,13 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
         setCardLabels(prevLabels => prevLabels.filter(label => label.id !== labelId));
     };
 
+    const handleClosePopup = () => {
+        if (setIsDragDisabled) {
+            setIsDragDisabled(false);
+        }
+        onClose();
+    };
+
     return (
         <div className="overlay" id="newListOverlay" ref={popupRef} tabIndex='0'>
         <div className='new-card-popup'>
@@ -209,7 +222,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 </div>
                 <DividerHeader className="new-card-popup-divider-header" />
                 <div className="x-icon">
-                    <div className="x" onClick={onClose}>
+                    <div className="x" onClick={handleClosePopup}>
                         <CloseIcon className="icon" />
                     </div>
                 </div>
@@ -401,7 +414,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
 
                     <div className="new-card-popup-buttons">
                         <div className="new-card-popup-cancel-button">
-                            <div className="button-base" onClick={onClose}>
+                            <div className="button-base" onClick={handleClosePopup}>
                                 <div className="text12">Cancel</div>
                             </div>
                         </div>
