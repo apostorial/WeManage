@@ -24,7 +24,7 @@ import '../styles/custom-datepicker.css';
 import LabelPopup from './LabelPopup';
 import DeleteAlert from './DeleteAlert';
 
-const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
+const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null, setIsDragDisabled }) => {
     const [cardName, setCardName] = useState('');
     const [cardCompany, setCardCompany] = useState('');
     const [cardPosition, setCardPosition] = useState('');
@@ -40,13 +40,22 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
     const [showLabelPopup, setShowLabelPopup] = useState(false);
     const [cardLabels, setCardLabels] = useState([]);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileName, setFileName] = useState('');
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
+        if (setIsDragDisabled) {
+            setIsDragDisabled(true);
+        }
         return () => {
             document.body.style.overflow = 'unset';
+            if (setIsDragDisabled) {
+                setIsDragDisabled(false);
+            }
         };
-    }, []);
+    }, [setIsDragDisabled]);
 
     useEffect(() => {
         if (isEditMode) {
@@ -63,8 +72,42 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 setCardMeetingDate(null);
             }
             setCardLabels(editCard.labels || []);
+            fetchFileName(editCard.id);
         }
     }, [editCard]);
+
+    const fetchFileName = async (cardId) => {
+        try {
+            const response = await axios.get(`/api/files/card/${cardId}/filename`);
+            setFileName(response.data);
+        } catch (error) {
+            setFileName(null)
+        }
+    };
+
+    const handleFileSelect = (event) => {
+        setSelectedFile(event.target.files[0]);
+        setFileName(event.target.files[0].name);
+    };
+
+    const handleUpload = async (cardId) => {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            await axios.post(`/api/files/card/${cardId}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('File uploaded successfully');
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            // Handle the error (e.g., show an error message to the user)
+        }
+    };
 
     const handleAddLabels = (labels) => {
         setCardLabels(labels);
@@ -99,11 +142,13 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 };
     
                 let response;
+                let updatedCard;
+
                 if (isEditMode) {
                     response = await axios.put(`/api/cards/update/${editCard.id}`, params, config);
                     
                     if (response.data) {
-                        const updatedCard = {
+                        updatedCard = {
                             ...editCard,
                             name: cardName.trim(),
                             company: cardCompany.trim(),
@@ -114,24 +159,39 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                             meeting: cardMeetingDate ? format(addHours(cardMeetingDate, 1), "yyyy-MM-dd'T'HH:mm:ssXXX") : null,
                             labels: cardLabels
                         };
-                        onSubmit(updatedCard);
-                        onClose();
+                        if (selectedFile) {
+                            await handleUpload(editCard.id);
+                        }
                     } else {
                         throw new Error('Update operation failed');
                     }
                 } else {
                     response = await axios.post('/api/cards/create', params, config);
                     if (response.data && response.data.card.id) {
-                        const newCard = {
+                        updatedCard = {
                             ...response.data.card,
                             labels: cardLabels
                         };
-                        onSubmit(newCard);
-                        onClose();
+                        if (selectedFile) {
+                            await handleUpload(response.data.card.id);
+                        }
                     } else {
                         throw new Error('Server response did not include a card with an id');
                     }
                 }
+
+                // Fetch the updated filename after upload
+                if (selectedFile) {
+                    try {
+                        const fileResponse = await axios.get(`/api/files/card/${updatedCard.id}/filename`);
+                        updatedCard.fileName = fileResponse.data;
+                    } catch (error) {
+                        console.error('Error fetching updated filename:', error);
+                    }
+                }
+
+                onSubmit(updatedCard);
+                onClose();
             } catch (err) {
                 setError(`Failed to ${isEditMode ? 'update' : 'create'} card. Please try again.`);
                 console.error(`Error ${isEditMode ? 'updating' : 'creating'} card:`, err);
@@ -194,6 +254,13 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
         setCardLabels(prevLabels => prevLabels.filter(label => label.id !== labelId));
     };
 
+    const handleClosePopup = () => {
+        if (setIsDragDisabled) {
+            setIsDragDisabled(false);
+        }
+        onClose();
+    };
+
     return (
         <div className="overlay" id="newListOverlay" ref={popupRef} tabIndex='0'>
         <div className='new-card-popup'>
@@ -209,7 +276,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                 </div>
                 <DividerHeader className="new-card-popup-divider-header" />
                 <div className="x-icon">
-                    <div className="x" onClick={onClose}>
+                    <div className="x" onClick={handleClosePopup}>
                         <CloseIcon className="icon" />
                     </div>
                 </div>
@@ -373,14 +440,20 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
                                     <UploadIcon className="file-upload-icon" />
                                     <div className="text-and-supporting-text3">
                                         <div className="action">
-                                            <div className="upload-button">
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                style={{ display: 'none' }}
+                                                onChange={handleFileSelect}
+                                            />
+                                            <div className="upload-button" onClick={() => fileInputRef.current.click()}>
                                                 <div className="upload-button-base">
                                                     <div className="click-to-upload">Click to upload</div>
                                                 </div>
                                             </div>
                                             <div className="text11">or drag and drop</div>
                                         </div>
-                                        <div className="supporting-text3">PDF, DOC, XLS, PNG or ZIP</div>
+                                        <div className="supporting-text3">{fileName ? `Selected file: ${fileName}` : 'PDF, DOC, XLS, PNG or ZIP'}</div>
                                     </div>
                                 </div>
                             </div>
@@ -401,7 +474,7 @@ const CardFormPopup = ({ onClose, onSubmit, columnId, editCard = null }) => {
 
                     <div className="new-card-popup-buttons">
                         <div className="new-card-popup-cancel-button">
-                            <div className="button-base" onClick={onClose}>
+                            <div className="button-base" onClick={handleClosePopup}>
                                 <div className="text12">Cancel</div>
                             </div>
                         </div>
