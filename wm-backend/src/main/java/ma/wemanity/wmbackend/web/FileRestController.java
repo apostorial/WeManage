@@ -112,4 +112,31 @@ public class FileRestController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/card/{cardId}/pdf")
+    public ResponseEntity<byte[]> getCardPDF(@PathVariable String cardId) {
+        try {
+            Card card = cardService.getCard(cardId);
+            if (card.getFile() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            GridFSFile file = fileService.getFile(card.getFile());
+            if (file == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            byte[] pdfData = fileService.getFileData(file);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", file.getFilename());
+
+            return new ResponseEntity<>(pdfData, headers, HttpStatus.OK);
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
