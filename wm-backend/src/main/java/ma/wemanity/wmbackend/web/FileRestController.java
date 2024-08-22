@@ -48,9 +48,9 @@ public class FileRestController {
             card.setFile(fileId);
             cardRepository.save(card);
 
-            return ResponseEntity.ok("File uploaded successfully");
+            return new ResponseEntity<>("File uploaded successfully.", HttpStatus.OK);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+            return new ResponseEntity<>("Failed to upload file.", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
@@ -60,7 +60,7 @@ public class FileRestController {
     public ResponseEntity<byte[]> getFile(@PathVariable String fileId) throws IOException {
         GridFSFile file = fileService.getCardFile(new ObjectId(fileId));
         if (file == null) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         GridFsResource resource = gridFsTemplate.getResource(file);
@@ -90,7 +90,7 @@ public class FileRestController {
                     .contentLength(file.getLength())
                     .body(resource);
         } catch (ServiceException e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -107,9 +107,9 @@ public class FileRestController {
                 return ResponseEntity.notFound().build();
             }
 
-            return ResponseEntity.ok(file.getFilename());
+            return new ResponseEntity<>(file.getFilename(), HttpStatus.OK);
         } catch (ServiceException e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
