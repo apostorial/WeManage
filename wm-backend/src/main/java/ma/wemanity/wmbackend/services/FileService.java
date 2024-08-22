@@ -11,4 +11,5 @@ public interface FileService {
     GridFSFile getFile(ObjectId id);
     GridFSFile getCardFile(ObjectId fileId);
     void deleteFile(ObjectId id);
+    byte[] getFileData(GridFSFile file) throws IOException;
 }
