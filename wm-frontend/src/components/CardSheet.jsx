@@ -17,6 +17,7 @@ import CloseIcon from '../assets/close_icon.svg?react';
 import FileIcon from '../assets/file_icon.svg?react';
 import TrashIcon from '../assets/trash.svg?react';
 import DeleteAlert from './DeleteAlert';
+import PDFViewer from './PDFViewer';
 
 const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
     const [user, setUser] = useState(null);
@@ -26,6 +27,11 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
     const [fileDetails, setFileDetails] = useState(null);
     const sheetRef = useRef(null);
     const deleteAlertRef = useRef(null);
+    const [showPDFViewer, setShowPDFViewer] = useState(false);
+
+    const handleOpenPDFViewer = () => {
+        setShowPDFViewer(true);
+    };
 
     const sortComments = (commentsToSort) => {
         return [...commentsToSort].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -288,7 +294,7 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
                             <div key={card.file.id} className="sheet-body-item-text7">
                                 <FileIcon className='file-upload-icon' />
                                 <div className="text-and-supporting-text">
-                                    <div className="file-name">{fileDetails ? fileDetails : 'Attached File'}</div>
+                                    <div className="file-name" onClick={handleOpenPDFViewer}>{fileDetails ? fileDetails : 'Attached File'}</div>
                                     <div className="supporting-text-parent">
                                         <div className="supporting-text">{fileDetails.split('.').pop().toUpperCase()}</div>
                                         <div className="supporting-text">•</div>
@@ -297,6 +303,12 @@ const CardSheet = ({ card, onClose, onDelete, onEdit }) => {
                                 </div>
                             </div>
                             )}
+                            {showPDFViewer && (
+                <div className="pdf-viewer-overlay">
+                    <button onClick={() => setShowPDFViewer(false)}>Close PDF</button>
+                    <PDFViewer cardId={card.id} />
+                </div>
+            )}
                     </div>
                 </div>
                 <div className="sheet-secondary-body-container">
